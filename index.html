@@ -375,7 +375,7 @@ body * {
     }
 }
 
-        /* Give time selectors more room on mobile phones */
+/* Give time selectors more room on mobile phones */
 @media screen and (max-width: 600px) {
     .time-row {
         display: flex;
@@ -394,12 +394,47 @@ body * {
         box-sizing: border-box;
     }
 }
+
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div id="gate-screen">
+
+        <div id="login-screen">
+    <h2>National Symphony Chorus Ireland — Sign In</h2>
+
+    <form id="login-form" onsubmit="handleLoginSubmit(event)">
+        <div class="form-group">
+            <label for="login-username">User</label>
+            <select id="login-username" required>
+                <option value="">-- Select your name --</option>
+                <option value="Lesley">Lesley</option>
+                <option value="Katie">Katie</option>
+                <option value="Kevin">Kevin</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="login-code">Google Authenticator code</label>
+            <input
+                id="login-code"
+                type="text"
+                inputmode="numeric"
+                pattern="[0-9]{6}"
+                maxlength="6"
+                autocomplete="one-time-code"
+                required
+                placeholder="Enter six-digit code"
+            >
+        </div>
+
+        <button type="submit">Sign In</button>
+        <p id="login-error" role="alert"></p>
+    </form>
+</div>
+
+        <div id="gate-screen" style="display: none;">
             <h2>Which choir's calendar do you want to edit?</h2>
             
             <div class="form-group">
@@ -435,6 +470,11 @@ body * {
             <div class="brand-header" id="brand-header-box">
                 <div class="brand-top" id="brand-title">NATIONAL SYMPHONY CHORUS IRELAND</div>
                 <div class="brand-bottom">Google Calendar Management Tool</div>
+                <div style="text-align: right; margin: 10px 0;">
+    <button type="button" onclick="logoutFromAuthenticator()">
+        Log Out
+    </button>
+</div>
             </div>
 
             <div class="dashboard-controls" id="dashboard-controls-box">
@@ -619,6 +659,101 @@ body * {
     <script>
         // Replace with your actual deployed Cloudflare Worker URL
         const WORKER_URL = 'https://manage-a-google-calendar.natsymphchorus.workers.dev/';
+
+        let sessionToken = null;
+        let sessionExpiresAt = null;
+
+        function hasValidSession() {
+    return Boolean(
+        sessionToken &&
+        sessionExpiresAt &&
+        Math.floor(Date.now() / 1000) < sessionExpiresAt
+    );
+}
+
+function checkSessionExpiry() {
+    if (sessionToken && !hasValidSession()) {
+        clearLoginSession();
+
+        document.getElementById('main-workspace').style.display = 'none';
+        document.getElementById('gate-screen').style.display = 'none';
+        document.getElementById('login-screen').style.display = 'block';
+
+        document.getElementById('login-error').textContent =
+            'Your 60-minute session has expired. Please sign in again.';
+    }
+}
+
+setInterval(checkSessionExpiry, 1000);
+
+function clearLoginSession() {
+    sessionToken = null;
+    sessionExpiresAt = null;
+}
+
+async function logoutFromAuthenticator() {
+    const token = sessionToken;
+
+    clearLoginSession();
+
+    if (token) {
+        try {
+            await fetch(`${WORKER_URL}auth/logout`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+        } catch (error) {
+            console.error('Logout request failed:', error);
+        }
+    }
+        document.getElementById('main-workspace').style.display = 'none';
+    document.getElementById('gate-screen').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'block';
+}
+
+async function loginWithAuthenticator(username, code) {
+    const response = await fetch(`${WORKER_URL}auth/login`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, code })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+        throw new Error(data.error || 'Login unsuccessful.');
+    }
+
+    sessionToken = data.token;
+    sessionExpiresAt = data.expiresAt;
+
+    return data;
+}
+    async function handleLoginSubmit(event) {
+    event.preventDefault();
+
+    const username = document.getElementById('login-username').value;
+    const code = document.getElementById('login-code').value.trim();
+    const errorElement = document.getElementById('login-error');
+
+    errorElement.textContent = '';
+
+    try {
+        await loginWithAuthenticator(username, code);
+
+        document.getElementById('login-code').value = '';
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('gate-screen').style.display = 'block';
+    } catch (error) {
+        errorElement.textContent = error.message;
+    }
+}
+
+
 
         let activeChoirKey = '';
         let currentActionState = 'add';
@@ -1024,8 +1159,13 @@ async function loadEntriesFromStartDate() {
 
     try {
         const response = await fetch(
-            `${WORKER_URL}?choir=${encodeURIComponent(activeChoirKey)}&startDate=${startDate}`
-        );
+    `${WORKER_URL}?choir=${encodeURIComponent(activeChoirKey)}&startDate=${startDate}`,
+    {
+        headers: {
+            'Authorization': `Bearer ${sessionToken}`
+        }
+    }
+);
 
         const data = await response.json();
 
@@ -1110,7 +1250,11 @@ async function loadEntriesFromStartDate() {
             container.innerHTML = '<p style="color: var(--text-muted); font-size: 0.9rem;">Loading entries from Google Calendar...</p>';
 
             try {
-                const response = await fetch(`${WORKER_URL}?choir=${activeChoirKey}&month=${monthVal}`);
+                const response = await fetch(`${WORKER_URL}?choir=${activeChoirKey}&month=${monthVal}`, {
+    headers: {
+        'Authorization': `Bearer ${sessionToken}`
+    }
+});
                 const data = await response.json();
 
                 if (data.success) {
@@ -1399,7 +1543,10 @@ function closeModal() {
             try {
                 const response = await fetch(WORKER_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${sessionToken}`
+},
                     body: JSON.stringify(payload)
                 });
 
