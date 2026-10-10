@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Calendar Management Tool</title>
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --danger: #dc2626;
+            --danger-bg: #fef2f2;
+            --danger-border: #fecaca;
+            --success-bg: #f0fdf4;
+            --success-text: #166534;
+            --success-border: #bbf7d0;
+            
+            --choir-1-bg: #d97706; /* Ochre */
+            --choir-2-bg: #0369a1; /* Slate Blue */
+            --choir-3-bg: #4f46e5; /* Indigo */
+            
+            --radius: 8px;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 2rem 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 650px;
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+
+        #gate-screen {
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        #gate-screen h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        select, input[type="date"], input[type="text"] {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 0.95rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: #fff;
+            box-sizing: border-box;
+            color: var(--text-main);
+            transition: border-color 0.2s;
+        }
+
+        select:disabled, input:disabled {
+            background-color: #f1f5f9;
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .confirmation-prompt {
+            background: #f1f5f9;
+            padding: 1.25rem;
+            border-radius: 6px;
+            margin-top: 1.5rem;
+            display: none;
+            text-align: left;
+        }
+
+        .confirmation-prompt.visible {
+            display: block;
+        }
+
+        .error-text {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 0.4rem;
+            display: none;
+        }
+
+        .security-code-highlight {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #2563eb;
+            letter-spacing: 0.5px;
+        }
+
+        #main-workspace {
+            display: none;
+        }
+
+        .brand-header {
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .brand-top {
+            color: #000;
+            padding: 1.25rem 1rem;
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .brand-bottom {
+            background-color: #ffffff;
+            color: #1e293b;
+            padding: 0.75rem 1rem;
+            font-size: 1.1rem;
+            font-style: italic;
+            font-weight: 600;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .dashboard-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+        }
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
+        .entries-section {
+            margin-bottom: 2rem;
+        }
+
+        .entries-section h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+        }
+
+        .entry-card {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            background: #fff;
+            position: relative;
+        }
+
+        .entry-card-header {
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .entry-details {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .entry-actions {
+            margin-top: 0.75rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .modal-container {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .modal-container.visible {
+            display: block;
+        }
+
+        .security-box {
+            background: var(--danger-bg);
+            border: 1px solid var(--danger-border);
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+        }
+
+        .security-box p {
+            margin: 0 0 0.5rem 0;
+            font-size: 0.9rem;
+            color: var(--danger);
+            font-weight: 500;
+        }
+
+        .config-checkboxes {
+            background: #f1f5f9;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            margin-top: 0.5rem;
+        }
+
+        .config-checkboxes .row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .config-checkboxes .row:last-child {
+            margin-bottom: 0;
+        }
+
+        .config-checkboxes label {
+            display: inline-flex;
+            align-items: center;
+            font-weight: normal;
+            cursor: pointer;
+            margin-right: 0;
+        }
+
+        .config-checkboxes input {
+            width: auto;
+            margin-right: 0.35rem;
+        }
+
+        .time-row {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .time-row > div {
+            flex: 1;
+        }
+
+        .time-select-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Printable choir schedule */
+@media print {
+
+    @page {
+        size: A4 portrait;
+        margin: 15mm;
+    }
+
+    /* Hide the normal interface without reserving space */
+body * {
+    visibility: hidden !important;
+}
+
+#main-workspace > *:not(#print-schedule-content) {
+    display: none !important;
+}
+
+    /* Show only the printable schedule */
+    #print-schedule-content,
+    #print-schedule-content * {
+        visibility: visible !important;
+    }
+
+    #print-schedule-content {
+        display: block !important;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: white;
+        color: black;
+        font-family: Arial, sans-serif;
+    }
+
+    /* Schedule heading */
+    #print-schedule-content h2 {
+        text-align: center;
+        font-size: 15pt;
+        margin: 0 0 5mm;
+    }
+
+    #print-schedule-content h3 {
+        text-align: center;
+        font-size: 11pt;
+        font-weight: normal;
+        margin: 0 0 8mm;
+    }
+
+    /* Two-column schedule */
+    .print-entries {
+        column-count: 2;
+        column-gap: 12mm;
+        column-fill: auto;
+        font-size: 9.5pt;
+        line-height: 1.3;
+    }
+
+    /* Keep each event together */
+    .print-entry {
+        break-inside: avoid;
+        page-break-inside: avoid;
+        margin-bottom: 4mm;
+    }
+
+    .print-entry strong {
+        display: block;
+        margin-bottom: 1mm;
+    }
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="gate-screen">
+            <h2>Which choir's calendar do you want to edit?</h2>
+            
+            <div class="form-group">
+                <label for="choir-dropdown">Select Choir</label>
+                <select id="choir-dropdown" onchange="handleChoirSelection()">
+                    <option value="" disabled selected>-- Choose a choir calendar --</option>
+                    <option value="choir1">National Symphony Chorus Ireland</option>
+                    <option value="choir2">Choir B</option>
+                    <option value="choir3">Choir C</option>
+                </select>
+            </div>
+
+            <div id="prompt-choir1" class="confirmation-prompt">
+                <label id="label-code-choir1" for="code-choir1">Enter code to proceed:</label>
+                <input type="text" id="code-choir1" placeholder="Type exact code shown above" oninput="verifyDynamicCode('choir1')">
+                <div class="error-text" id="err-choir1">Incorrect confirmation code. Case-sensitive.</div>
+            </div>
+
+            <div id="prompt-choir2" class="confirmation-prompt">
+                <label id="label-code-choir2" for="code-choir2">Enter code to proceed:</label>
+                <input type="text" id="code-choir2" placeholder="Type exact code shown above" oninput="verifyDynamicCode('choir2')">
+                <div class="error-text" id="err-choir2">Incorrect confirmation code. Case-sensitive.</div>
+            </div>
+
+            <div id="prompt-choir3" class="confirmation-prompt">
+                <label id="label-code-choir3" for="code-choir3">Enter code to proceed:</label>
+                <input type="text" id="code-choir3" placeholder="Type exact code shown above" oninput="verifyDynamicCode('choir3')">
+                <div class="error-text" id="err-choir3">Incorrect confirmation code. Case-sensitive.</div>
+            </div>
+        </div>
+
+        <div id="main-workspace">
+            <div class="brand-header" id="brand-header-box">
+                <div class="brand-top" id="brand-title">NATIONAL SYMPHONY CHORUS IRELAND</div>
+                <div class="brand-bottom">Google Calendar Management Tool</div>
+            </div>
+
+            <div class="dashboard-controls" id="dashboard-controls-box">
+                <div>
+    <label for="start-date-selector" style="font-size: 0.875rem; margin-bottom: 0.4rem;">
+        Show entries beginning on
+    </label>
+    <input
+        type="date"
+        id="start-date-selector"
+        onchange="handleStartDateChange()"
+    >
+</div>
+                <div id="later-year-container" style="display: none;">
+                    <label for="later-year-selector" style="font-size: 0.75rem; margin-bottom: 0.2rem;">Select Year</label>
+                    <select id="later-year-selector" onchange="handleYearChange()">
+                        <option value="" disabled selected>-- Choose Year --</option>
+                        <option value="2027">2027</option>
+                        <option value="2028">2028</option>
+                        <option value="2029">2029</option>
+                        <option value="2030">2030</option>
+                    </select>
+                </div>
+                <div id="later-month-container" style="display: none;">
+                    <label for="later-month-selector" style="font-size: 0.75rem; margin-bottom: 0.2rem;">Select Month</label>
+                    <select id="later-month-selector" onchange="loadLaterMonthsForYear()">
+                        <option value="" disabled selected>-- Choose Month --</option>
+                    </select>
+                </div>
+                <div style="align-self: flex-end; display: flex; gap: 0.75rem; align-items: center;">
+    <button class="btn" onclick="openAddModal()">+ Add New Entry</button>
+
+    <button class="btn" onclick="openPrintPanel()""
+            style="background-color: #a8d5a2; color: #173b1a;">
+        Print Schedule
+    </button>
+</div>
+            </div>
+
+            <!-- Global Modal Container for Actions -->
+            <div class="modal-container" id="global-action-modal">
+                <h3 id="modal-title">Add New Entry</h3>
+                <form id="entry-form" onsubmit="handleFormSubmit(event)">
+                    <div class="form-group">
+                        <label for="event-type">Event Category</label>
+                        <select id="event-type" required onchange="handleCategoryChange()">
+                            <option value="Choir Rehearsal" selected>Choir Rehearsal</option>
+                            <option value="Conductor's Piano Rehearsal">Conductor's Piano Rehearsal</option>
+                            <option value="Orchestral Rehearsal">Orchestral Rehearsal</option>
+                            <option value="Performance">Performance</option>
+                            <option value="Party">Party</option>
+                            <option value="Other">Other (please specify)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="custom-category-group" style="display: none;">
+                        <label for="custom-category-input">Specify Event Category (max 30 characters)</label>
+                        <input type="text" id="custom-category-input" maxlength="30" placeholder="Enter custom category">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Configuration & Sections</label>
+                        <div class="config-checkboxes">
+                            <div class="row">
+                                <label style="flex: 1;"><input type="checkbox" name="voice" value="S" checked> S</label>
+                                <label style="flex: 1;"><input type="checkbox" name="voice" value="A" checked> A</label>
+                                <label style="flex: 1;"><input type="checkbox" name="voice" value="T" checked> T</label>
+                                <label style="flex: 1;"><input type="checkbox" name="voice" value="B" checked> B</label>
+                            </div>
+                            <div class="row" style="margin-top: 0.5rem; border-top: 1px solid #cbd5e1; padding-top: 0.35rem;">
+                                <label style="flex: 1;"><input type="checkbox" name="group" value="Full Choir" id="chk-full-choir" checked onchange="handleGroupChange('Full Choir')"> Full Choir</label>
+                                <label style="flex: 1;"><input type="checkbox" name="group" value="Semi-Chorus" id="chk-semi-chorus" onchange="handleGroupChange('Semi-Chorus')"> Semi-Chorus</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+    <label for="event-date-dropdown">Date</label>
+    <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <div id="event-weekday" style="font-weight: 600; min-width: 95px;"></div>
+        <input type="date" id="event-date-dropdown" required
+       onchange="validateEventDate()"
+       oninput="validateEventDate()"
+       style="flex: 1; min-width: 0;">
+    </div>
+</div>
+
+                    <div class="form-group time-row">
+                        <div>
+                            <label>Start Time</label>
+                            <div class="time-select-group">
+                                <select id="start-hour" required style="flex: 1;"></select>
+                                <select id="start-minute" required style="flex: 1;"></select>
+                            </div>
+                        </div>
+                        <div>
+                            <label>End Time</label>
+                            <div class="time-select-group">
+                                <select id="end-hour" required style="flex: 1;"></select>
+                                <select id="end-minute" required style="flex: 1;"></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="event-venue">Venue</label>
+                        <select id="event-venue" required onchange="handleVenueChange()">
+                            <option value="Kevin Barry Room" selected>Kevin Barry Room</option>
+                            <option value="The Studio">The Studio</option>
+                            <option value="Lecture Theatre">Lecture Theatre</option>
+                            <option value="John Field Room">John Field Room</option>
+                            <option value="Main Hall">Main Hall</option>
+                            <option value="Other">Other (please specify)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="custom-venue-group" style="display: none;">
+                        <label for="custom-venue-input">Specify Venue (max 100 characters)</label>
+                        <input type="text" id="custom-venue-input" maxlength="100" placeholder="Enter venue name">
+                    </div>
+
+                    <div class="security-box" id="security-verification-box" style="display: none;">
+                        <p id="security-prompt-text">Security Gate: Type code to confirm.</p>
+                        <input type="text" id="security-user-input" placeholder="Enter security code">
+                    </div>
+
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                        <button type="submit" class="btn" id="modal-submit-btn">Save Entry</button>
+                        <button type="button" class="btn" style="background: #64748b;" onclick="closeModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="print-schedule-content" style="display: none;"></div>
+
+            <div id="print-panel"
+     style="display: none; background: #f5faf5; border: 1px solid #a8d5a2;
+            border-radius: 8px; padding: 1.25rem; margin: 1rem 0;">
+
+    <h3 style="margin-top: 0;">Print Schedule</h3>
+
+    <p style="font-size: 0.9rem;">
+        Choose the period you want to include in the printed schedule.
+    </p>
+
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+
+        <div>
+            <label for="print-from-date">From</label>
+            <input type="date" id="print-from-date">
+        </div>
+
+        <div>
+            <label for="print-to-date">To</label>
+            <input type="date" id="print-to-date">
+        </div>
+
+    </div>
+
+    <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+        <button type="button" class="btn"
+                onclick="closePrintPanel()">
+            Cancel
+        </button>
+
+        <button type="button" class="btn"
+                onclick="printSelectedSchedule()"
+                style="background-color: #a8d5a2; color: #173b1a;">
+            Print
+        </button>
+    </div>
+
+</div>
+
+            <div class="entries-section">                
+                <h3 id="entries-header">Existing Entries</h3>
+                <div id="entries-list-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Replace with your actual deployed Cloudflare Worker URL
+        const WORKER_URL = 'https://manage-a-google-calendar.natsymphchorus.workers.dev/';
+
+        let activeChoirKey = '';
+        let currentActionState = 'add';
+        let targetEntryIndex = null;
+        let requiredRandomCode = '';
+
+        const sessionDynamicCodes = {
+            'choir1': '',
+            'choir2': '',
+            'choir3': ''
+        };
+
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+        function populateTimeDropdowns() {
+            const hourSelects = ['start-hour', 'end-hour'];
+            hourSelects.forEach(id => {
+                const sel = document.getElementById(id);
+                sel.innerHTML = '';
+                for (let h = 0; h < 24; h++) {
+                    let hStr = String(h).padStart(2, '0');
+                    let opt = document.createElement('option');
+                    opt.value = hStr;
+                    opt.textContent = hStr;
+                    sel.appendChild(opt);
+                }
+            });
+
+            const minuteSelects = ['start-minute', 'end-minute'];
+            const allowedMinutes = ['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55'];
+            minuteSelects.forEach(id => {
+                const sel = document.getElementById(id);
+                sel.innerHTML = '';
+                allowedMinutes.forEach(m => {
+                    let opt = document.createElement('option');
+                    opt.value = m;
+                    opt.textContent = m;
+                    sel.appendChild(opt);
+                });
+            });
+        }
+
+        function setTimeString(prefix, timeStr) {
+            if (!timeStr) return;
+            const parts = timeStr.split(':');
+            if (parts.length === 2) {
+                document.getElementById(`${prefix}-hour`).value = parts[0];
+                let min = parts[1];
+                const allowedMinutes = ['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55'];
+                if (!allowedMinutes.includes(min)) {
+                    let opt = document.createElement('option');
+                    opt.value = min;
+                    opt.textContent = min;
+                    document.getElementById(`${prefix}-minute`).appendChild(opt);
+                }
+                document.getElementById(`${prefix}-minute`).value = min;
+            }
+        }
+
+        function getTimeString(prefix) {
+            const h = document.getElementById(`${prefix}-hour`).value;
+            const m = document.getElementById(`${prefix}-minute`).value;
+            return `${h}:${m}`;
+        }
+
+        function generateRandomMixedCase(word) {
+            return word.split('').map(char => {
+                return Math.random() < 0.5 ? char.toUpperCase() : char.toLowerCase();
+            }).join('');
+        }
+
+        function initDynamicCodes() {
+            const baseWords = { 'choir1': 'NSCI', 'choir2': 'CHOIRB', 'choir3': 'CHOIRC' };
+            
+            ['choir1', 'choir2', 'choir3'].forEach(choirId => {
+                const mixedLetters = generateRandomMixedCase(baseWords[choirId]);
+                const randNum = Math.floor(Math.random() * 90) + 10; 
+                sessionDynamicCodes[choirId] = mixedLetters + randNum;
+
+                const labelEl = document.getElementById(`label-code-${choirId}`);
+                labelEl.innerHTML = `Enter code <span class="security-code-highlight">${sessionDynamicCodes[choirId]}</span> to proceed:`;
+            });
+        }
+
+        function initMonthSelector() {
+            const selector = document.getElementById('month-selector');
+            selector.innerHTML = '';
+
+            let date = new Date(2026, 9, 1); // October 2026
+            for (let i = 0; i < 12; i++) {
+                let year = date.getFullYear();
+                let month = date.getMonth();
+                let monthVal = `${year}-${String(month + 1).padStart(2, '0')}`;
+                let monthLabel = `${monthNames[month]} ${year}`;
+
+                let opt = document.createElement('option');
+                opt.value = monthVal;
+                opt.textContent = monthLabel;
+                selector.appendChild(opt);
+
+                date.setMonth(date.getMonth() + 1);
+            }
+
+            let laterOpt = document.createElement('option');
+            laterOpt.value = 'later';
+            laterOpt.textContent = 'Later months...';
+            selector.appendChild(laterOpt);
+        }
+
+        function populateModalDates(specificDateStr = null, specificDateText = null) {
+    const datePicker = document.getElementById('event-date-dropdown');
+
+    // Today's date in Ireland, regardless of the computer's timezone.
+    const today = new Intl.DateTimeFormat('sv-SE', {
+        timeZone: 'Europe/Dublin',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    }).format(new Date());
+
+    // Prevent selecting dates in the past.
+    datePicker.min = today;
+
+    // Amend and Delete show the selected event's original date.
+    // Add defaults to today.
+    datePicker.value = specificDateStr || today;
+updateEventWeekday();
+}
+
+function updateEventWeekday() {
+    const dateStr = document.getElementById('event-date-dropdown').value;
+    const weekdayDisplay = document.getElementById('event-weekday');
+
+    if (!dateStr) {
+        weekdayDisplay.textContent = '';
+        return;
+    }
+
+    const date = new Date(dateStr + 'T12:00:00Z');
+
+    weekdayDisplay.textContent = date.toLocaleDateString('en-IE', {
+        timeZone: 'Europe/Dublin',
+        weekday: 'long'
+    });
+}
+
+function validateEventDate() {
+    const datePicker = document.getElementById('event-date-dropdown');
+
+    const today = new Intl.DateTimeFormat('sv-SE', {
+        timeZone: 'Europe/Dublin',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    }).format(new Date());
+
+    datePicker.min = today;
+
+    if (datePicker.value && datePicker.value < today) {
+        datePicker.value = today;
+    }
+
+    updateEventWeekday();
+}
+
+        function handleGroupChange(changedGroup) {
+            const fullChoir = document.getElementById('chk-full-choir');
+            const semiChorus = document.getElementById('chk-semi-chorus');
+
+            if (changedGroup === 'Full Choir' && fullChoir.checked) {
+                semiChorus.checked = false;
+            } else if (changedGroup === 'Semi-Chorus' && semiChorus.checked) {
+                fullChoir.checked = false;
+            }
+        }
+
+        function handleCategoryChange() {
+            const cat = document.getElementById('event-type').value;
+            const customGroup = document.getElementById('custom-category-group');
+            if (cat === 'Other') {
+                customGroup.style.display = 'block';
+                document.getElementById('custom-category-input').required = true;
+            } else {
+                customGroup.style.display = 'none';
+                document.getElementById('custom-category-input').required = false;
+                document.getElementById('custom-category-input').value = '';
+            }
+        }
+
+        function handleVenueChange() {
+            const venue = document.getElementById('event-venue').value;
+            const customGroup = document.getElementById('custom-venue-group');
+            if (venue === 'Other') {
+                customGroup.style.display = 'block';
+                document.getElementById('custom-venue-input').required = true;
+            } else {
+                customGroup.style.display = 'none';
+                document.getElementById('custom-venue-input').required = false;
+                document.getElementById('custom-venue-input').value = '';
+            }
+        }
+
+        function handleChoirSelection() {
+            const dropdown = document.getElementById('choir-dropdown');
+            activeChoirKey = dropdown.value;
+
+            document.querySelectorAll('.confirmation-prompt').forEach(el => el.classList.remove('visible'));
+
+            if (activeChoirKey) {
+                const targetPrompt = document.getElementById(`prompt-${activeChoirKey}`);
+                if (targetPrompt) targetPrompt.classList.add('visible');
+            }
+        }
+
+        function verifyDynamicCode(choirId) {
+            const inputVal = document.getElementById(`code-${choirId}`).value;
+            const errBox = document.getElementById(`err-${choirId}`);
+            const targetCode = sessionDynamicCodes[choirId];
+
+            if (inputVal === targetCode) {
+                errBox.style.display = 'none';
+                unlockWorkspace(choirId);
+            } else if (inputVal.length > 0) {
+                errBox.style.display = 'block';
+            } else {
+                errBox.style.display = 'none';
+            }
+        }
+
+        function unlockWorkspace(choirId) {
+            document.getElementById('gate-screen').style.display = 'none';
+            document.getElementById('main-workspace').style.display = 'block';
+
+            const brandTitle = document.getElementById('brand-title');
+            const brandBox = document.getElementById('brand-header-box');
+
+            if (choirId === 'choir1') {
+                brandTitle.textContent = "NATIONAL SYMPHONY CHORUS IRELAND";
+                brandBox.style.backgroundColor = "var(--choir-1-bg)";
+            } else if (choirId === 'choir2') {
+                brandTitle.textContent = "CHOIR B";
+                brandBox.style.backgroundColor = "var(--choir-2-bg)";
+            } else if (choirId === 'choir3') {
+                brandTitle.textContent = "CHOIR C";
+                brandBox.style.backgroundColor = "var(--choir-3-bg)";
+            }
+
+            const today = new Intl.DateTimeFormat('sv-SE', {
+    timeZone: 'Europe/Dublin',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+}).format(new Date());
+
+const startDateSelector = document.getElementById('start-date-selector');
+startDateSelector.min = today;
+startDateSelector.value = today;
+            loadEntriesFromStartDate();
+        }
+
+      function openPrintPanel() {
+    const panel = document.getElementById('print-panel');
+    const fromDate = document.getElementById('print-from-date');
+    const toDate = document.getElementById('print-to-date');
+
+    // Use the calendar's currently selected starting date.
+    const startDate = document.getElementById('start-date-selector').value;
+
+    fromDate.value = startDate;
+    fromDate.min = startDate;
+
+    // Initially leave the closing date for the user to choose.
+    toDate.value = '';
+    toDate.min = startDate;
+
+    panel.style.display = 'block';
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function closePrintPanel() {
+    document.getElementById('print-panel').style.display = 'none';
+}  
+
+function printSelectedSchedule() {
+    const fromDate = document.getElementById('print-from-date').value;
+    const toDate = document.getElementById('print-to-date').value;
+
+    if (!fromDate || !toDate) {
+        alert('Please select both a From date and a To date.');
+        return;
+    }
+
+    if (toDate < fromDate) {
+        alert('The To date cannot be earlier than the From date.');
+        return;
+    }
+
+    const selectedEntries = (window.currentCalendarEntries || []).filter(entry =>
+    entry.dateStr >= fromDate && entry.dateStr <= toDate
+);
+
+const printContent = document.getElementById('print-schedule-content');
+
+const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, char => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+}[char]));
+
+const formatDate = dateStr =>
+    new Date(dateStr + 'T12:00:00Z').toLocaleDateString('en-IE', {
+        timeZone: 'Europe/Dublin',
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    });
+
+const entriesByDate = {};
+
+selectedEntries.forEach(entry => {
+    if (!entriesByDate[entry.dateStr]) {
+        entriesByDate[entry.dateStr] = [];
+    }
+    entriesByDate[entry.dateStr].push(entry);
+});
+
+const entriesHTML = Object.keys(entriesByDate)
+    .sort()
+    .map(dateStr => `
+        <div class="print-entry">
+            <strong>${escapeHTML(formatDate(dateStr))}</strong>
+
+            ${entriesByDate[dateStr].map(entry => `
+                <div style="margin-bottom: 2mm;">
+                    <div>${escapeHTML(entry.title)}</div>
+                    <div>${escapeHTML(entry.time)}</div>
+                    <div>${escapeHTML(entry.venue)}</div>
+                </div>
+            `).join('')}
+        </div>
+    `).join('');
+
+printContent.innerHTML = `
+    <h2>NATIONAL SYMPHONY CHORUS IRELAND</h2>
+    <h3>Choir Schedule: ${escapeHTML(formatDate(fromDate))}
+        – ${escapeHTML(formatDate(toDate))}</h3>
+    <div class="print-entries">
+        ${entriesHTML}
+    </div>
+`;
+
+closePrintPanel();
+window.print();
+}
+        
+        
+        
+        function handleStartDateChange() {
+    loadEntriesFromStartDate();
+}
+
+async function loadEntriesFromStartDate() {
+    closeModal();
+
+    const selector = document.getElementById('start-date-selector');
+
+    const today = new Intl.DateTimeFormat('sv-SE', {
+        timeZone: 'Europe/Dublin',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    }).format(new Date());
+
+    selector.min = today;
+
+    if (!selector.value || selector.value < today) {
+        selector.value = today;
+    }
+
+    const startDate = selector.value;
+
+    const displayDate = new Date(startDate + 'T12:00:00Z')
+    .toLocaleDateString('en-IE', {
+        timeZone: 'Europe/Dublin',
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    })
+    .replace(/^([^,]+) (\d{1,2}) /, '$1, $2 ');
+
+    document.getElementById('entries-header').textContent =
+        `Entries beginning on ${displayDate}`;
+
+    const container = document.getElementById('entries-list-container');
+
+    container.innerHTML =
+        '<p>Loading entries from Google Calendar...</p>';
+
+    try {
+        const response = await fetch(
+            `${WORKER_URL}?choir=${encodeURIComponent(activeChoirKey)}&startDate=${startDate}`
+        );
+
+        const data = await response.json();
+
+        if (data.success) {
+    window.currentCalendarEntries = data.entries || [];
+    renderEntries(window.currentCalendarEntries);
+} else {
+            container.textContent =
+                `Error loading entries: ${data.error || 'Unknown error'}`;
+        }
+
+    } catch (err) {
+        container.textContent =
+            `Failed to connect to Worker: ${err.message}`;
+    }
+}
+
+        function handleMonthChange() {
+            const monthSelector = document.getElementById('month-selector');
+            const yearContainer = document.getElementById('later-year-container');
+            const monthContainer = document.getElementById('later-month-container');
+
+            if (monthSelector.value === 'later') {
+                yearContainer.style.display = 'block';
+                monthContainer.style.display = 'none';
+                document.getElementById('later-year-selector').selectedIndex = 0;
+                document.getElementById('later-month-selector').innerHTML = '<option value="" disabled selected>-- Choose Month --</option>';
+            } else {
+                yearContainer.style.display = 'none';
+                monthContainer.style.display = 'none';
+                loadEntriesForCurrentMonth();
+            }
+        }
+
+        function handleYearChange() {
+            const year = document.getElementById('later-year-selector').value;
+            if (!year) return;
+
+            const monthContainer = document.getElementById('later-month-container');
+            monthContainer.style.display = 'block';
+
+            const monthSelector = document.getElementById('later-month-selector');
+            monthSelector.innerHTML = '<option value="" disabled selected>-- Choose Month --</option>';
+
+            for (let m = 0; m < 12; m++) {
+                let opt = document.createElement('option');
+                opt.value = m;
+                opt.textContent = `${monthNames[m]} ${year}`;
+                monthSelector.appendChild(opt);
+            }
+        }
+
+        async function loadLaterMonthsForYear() {
+            const year = document.getElementById('later-year-selector').value;
+            const monthIdx = document.getElementById('later-month-selector').value;
+            if (!year || monthIdx === '') return;
+
+            let selectedVal = `${year}-${String(parseInt(monthIdx, 10) + 1).padStart(2, '0')}`;
+            document.getElementById('entries-header').textContent = `Existing Entries for ${monthNames[parseInt(monthIdx, 10)]} ${year}`;
+            
+            await fetchEntriesFromWorker(selectedVal);
+        }
+
+        async function loadEntriesForCurrentMonth() {
+            closeModal();
+            const monthSelector = document.getElementById('month-selector');
+            const monthVal = monthSelector.value;
+            if (monthVal === 'later') {
+                loadLaterMonthsForYear();
+                return;
+            }
+
+            const [year, monthNum] = monthVal.split('-');
+            const monthName = monthNames[parseInt(monthNum, 10) - 1];
+
+            document.getElementById('entries-header').textContent = `Existing Entries for ${monthName} ${year}`;
+            await fetchEntriesFromWorker(monthVal);
+        }
+
+        async function fetchEntriesFromWorker(monthVal) {
+            const container = document.getElementById('entries-list-container');
+            container.innerHTML = '<p style="color: var(--text-muted); font-size: 0.9rem;">Loading entries from Google Calendar...</p>';
+
+            try {
+                const response = await fetch(`${WORKER_URL}?choir=${activeChoirKey}&month=${monthVal}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    renderEntries(data.entries || []);
+                } else {
+                    container.innerHTML = `<p style="color: var(--danger); font-size: 0.9rem;">Error loading entries: ${data.error || 'Unknown error'}</p>`;
+                }
+            } catch (err) {
+                container.innerHTML = `<p style="color: var(--danger); font-size: 0.9rem;">Failed to connect to Worker: ${err.message}</p>`;
+            }
+        }
+
+        function renderEntries(entries) {
+            window.calendarEntriesById = new Map(
+    entries.map(entry => [String(entry.id), entry])
+);
+            const container = document.getElementById('entries-list-container');
+            container.innerHTML = '';
+
+            if (entries.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-muted); font-size: 0.9rem;">No upcoming entries found for this period.</p>';
+                return;
+            }
+
+            entries.forEach((entry, index) => {
+                const card = document.createElement('div');
+                card.className = 'entry-card';
+                card.id = `entry-card-${entry.id}`;
+                card.innerHTML = `
+                    <div class="entry-card-header">
+                        <span>${index + 1}. ${entry.date}</span>
+                    </div>
+                    <div class="entry-details">
+                        <strong>${entry.title}</strong><br>
+                        Time: ${entry.time}<br>
+                        Venue: ${entry.venue}
+                    </div>
+                    <div class="entry-actions">                      
+<button class="btn" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" onclick="openAmendModal('${entry.id}')">Amend</button>
+<button class="btn btn-danger" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" onclick="openDeleteModal('${entry.id}')">Delete</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function setFormEditable(isEditable) {
+            document.getElementById('event-type').disabled = !isEditable;
+            document.getElementById('custom-category-input').disabled = !isEditable;
+            document.querySelectorAll('input[name="voice"], input[name="group"]').forEach(cb => cb.disabled = !isEditable);
+            document.getElementById('event-date-dropdown').disabled = !isEditable;
+            document.getElementById('start-hour').disabled = !isEditable;
+            document.getElementById('start-minute').disabled = !isEditable;
+            document.getElementById('end-hour').disabled = !isEditable;
+            document.getElementById('end-minute').disabled = !isEditable;
+            document.getElementById('event-venue').disabled = !isEditable;
+            document.getElementById('custom-venue-input').disabled = !isEditable;
+        }
+
+        function moveModalSafe() {
+            const modal = document.getElementById('global-action-modal');
+            const container = document.getElementById('entries-list-container');
+            container.before(modal);
+            modal.classList.add('visible');
+        }
+
+        function openAddModal() {
+            currentActionState = 'add';
+            document.getElementById('modal-title').textContent = 'Add New Entry';
+            document.getElementById('modal-submit-btn').textContent = 'Create Entry';
+            document.getElementById('modal-submit-btn').className = 'btn';
+            document.getElementById('security-verification-box').style.display = 'none';
+            document.getElementById('entry-form').reset();
+            
+            document.getElementById('custom-category-group').style.display = 'none';
+            document.getElementById('custom-venue-group').style.display = 'none';
+
+            populateTimeDropdowns();
+            setTimeString('start', '19:30');
+            setTimeString('end', '22:00');
+
+            setFormEditable(true);
+            document.querySelectorAll('input[name="voice"]').forEach(cb => cb.checked = true);
+            document.getElementById('chk-full-choir').checked = true;
+            document.getElementById('chk-semi-chorus').checked = false;
+
+            populateModalDates();
+            moveModalSafe();
+        }
+
+        function openAmendModal(id) {
+            currentActionState = 'amend';
+            targetEntryIndex = id;
+            const modalTitle = document.querySelector('#global-action-modal #modal-title');
+console.log('Modal title found:', modalTitle);
+if (modalTitle) modalTitle.textContent = 'Amend Entry';
+console.log('Modal container:', document.getElementById('global-action-modal'));
+console.log('Heading anywhere:', document.getElementById('modal-title'));
+            document.getElementById('modal-submit-btn').textContent = 'Confirm Amendment';
+            document.getElementById('modal-submit-btn').className = 'btn';
+            
+            
+populateTimeDropdowns();
+
+// Retrieve the existing event selected for amendment.
+const entry = window.calendarEntriesById?.get(String(id));
+console.log('Selected event data:', entry);
+
+if (!entry) {
+    alert("Could not find the selected event details. Please refresh the calendar and try again.");
+    return;
+}
+
+// Populate the form with the saved event details.
+document.getElementById('event-type').value = entry.category;
+// Restore the saved voice sections.
+document.querySelectorAll('input[name="voice"]').forEach(checkbox => {
+    checkbox.checked = entry.voices.includes(checkbox.value);
+});
+
+// Restore the saved choir configuration.
+document.getElementById('chk-semi-chorus').checked = entry.semi === true;
+document.getElementById('chk-full-choir').checked = entry.semi !== true;
+populateModalDates(entry.dateStr, entry.date);
+setTimeString('start', entry.startTime);
+setTimeString('end', entry.endTime);
+
+// Restore the selected venue.
+const venueSelect = document.getElementById('event-venue');
+const customVenueInput = document.getElementById('custom-venue-input');
+const customVenueGroup = document.getElementById('custom-venue-group');
+
+const venueOptionExists = Array.from(venueSelect.options)
+    .some(option => option.value === entry.venue);
+
+if (venueOptionExists) {
+    venueSelect.value = entry.venue;
+    customVenueGroup.style.display = 'none';
+} else {
+    venueSelect.value = 'Other';
+    customVenueGroup.style.display = 'block';
+    customVenueInput.value = entry.venue || '';
+}
+
+setFormEditable(true);
+
+            requiredRandomCode = String(Math.floor(Math.random() * 900) + 100);
+
+            document.getElementById('security-prompt-text').innerHTML = `Security Gate: Type code <span class="security-code-highlight">${requiredRandomCode}</span> to authorise amendment.  Please double-check first that you are amending the right entry, and have amended it exactly as intended.`;
+            document.getElementById('security-verification-box').style.display = 'block';
+            document.getElementById('security-user-input').value = '';
+            
+            document.getElementById('global-action-modal').classList.add('visible');
+            document.getElementById('global-action-modal').scrollIntoView({
+    behavior: 'smooth',
+    block: 'center'
+});
+        }
+
+        function openDeleteModal(id) {
+            currentActionState = 'delete';
+            targetEntryIndex = id;
+            document.getElementById('modal-title').textContent = 'Delete Entry';
+            document.getElementById('modal-submit-btn').textContent = 'Confirm Deletion';
+            document.getElementById('modal-submit-btn').className = 'btn btn-danger';
+
+            
+populateTimeDropdowns();
+
+// Retrieve the original event selected for deletion.
+const entry = window.calendarEntriesById?.get(String(id));
+
+if (!entry) {
+    alert("Could not find the selected event details. Please refresh the calendar and try again.");
+    return;
+}
+
+// Show the saved date, including its full day and date label.
+populateModalDates(entry.dateStr, entry.date);
+
+// Show the original start and end times.
+setTimeString('start', entry.startTime);
+setTimeString('end', entry.endTime);
+
+// Show the original venue, including custom venues.
+const venueSelect = document.getElementById('event-venue');
+const customVenueInput = document.getElementById('custom-venue-input');
+const customVenueGroup = document.getElementById('custom-venue-group');
+
+const venueOptionExists = Array.from(venueSelect.options)
+    .some(option => option.value === entry.venue);
+
+if (venueOptionExists) {
+    venueSelect.value = entry.venue;
+    customVenueGroup.style.display = 'none';
+} else {
+    venueSelect.value = 'Other';
+    customVenueGroup.style.display = 'block';
+    customVenueInput.value = entry.venue || '';
+}
+
+// Keep all event fields read-only for deletion.
+setFormEditable(false);
+
+            requiredRandomCode = String(Math.floor(Math.random() * 900) + 100);
+
+            document.getElementById('security-prompt-text').innerHTML = `Security Gate: Type code <span class="security-code-highlight">${requiredRandomCode}</span> to authorise deletion. Please double-check first that you have selected the right entry for deletion.`;
+            document.getElementById('security-verification-box').style.display = 'block';
+            document.getElementById('security-user-input').value = '';
+
+            document.getElementById('global-action-modal').classList.add('visible');
+            document.getElementById('global-action-modal').scrollIntoView({
+    behavior: 'smooth',
+    block: 'center'
+});
+        }
+
+        
+function closeModal() {
+    const modal = document.getElementById('global-action-modal');
+
+    // The modal may already be absent from the page.
+    if (modal) {
+        modal.classList.remove('visible');
+    }
+
+    const submitButton = document.getElementById('modal-submit-btn');
+    if (submitButton) {
+        submitButton.className = 'btn';
+    }
+
+    // Restore form fields only when the form exists.
+    const form = document.getElementById('entry-form');
+    if (form) {
+        setFormEditable(true);
+    }
+}
+
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+
+            if (currentActionState === 'amend' || currentActionState === 'delete') {
+                const userInput = document.getElementById('security-user-input').value;
+                if (userInput !== requiredRandomCode) {
+                    alert(`Verification failed! You must correctly enter the security code (${requiredRandomCode}). Case-sensitive.`);
+                    return;
+                }
+            }
+
+            let category = document.getElementById('event-type').value;
+            if (category === 'Other') {
+                category = document.getElementById('custom-category-input').value.trim();
+            }
+
+            let venue = document.getElementById('event-venue').value;
+            if (venue === 'Other') {
+                venue = document.getElementById('custom-venue-input').value.trim();
+            }
+
+            const checkedVoices = Array.from(document.querySelectorAll('input[name="voice"]:checked')).map(cb => cb.value);
+            const semiChorusChecked = document.getElementById('chk-semi-chorus').checked;
+
+            let voiceString = checkedVoices.join('');
+            let finalTitle = (voiceString === "SATB" && category === 'Choir Rehearsal' && !semiChorusChecked) ? "SATB Rehearsal" : `${voiceString} ${category}`;
+
+            const startTime = getTimeString('start');
+            const endTime = getTimeString('end');
+            const selectedDateStr = document.getElementById('event-date-dropdown').value;
+            const monthKey = selectedDateStr.substring(0, 7);
+
+            const payload = {
+                action: currentActionState,
+                choir: activeChoirKey,
+                entryId: targetEntryIndex,
+                dateStr: selectedDateStr,
+                startTime,
+                endTime,
+                title: finalTitle,
+                venue,
+                category,
+                voices: checkedVoices,
+                semi: semiChorusChecked
+            };
+
+            
+            try {
+                const response = await fetch(WORKER_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    await closeModuleAndRefresh(monthKey);
+                } else {
+                    alert(`Error: ${result.error || 'Failed to update calendar.'}`);
+                }
+            } catch (err) {
+                alert(`Network error communicating with Worker: ${err.message}`);
+            }
+        }
+
+
+    
+async function closeModuleAndRefresh(monthKey) {
+    closeModal();
+    await loadEntriesFromStartDate();
+} 
+
+        window.onload = function() {
+            populateTimeDropdowns();
+            initDynamicCodes();
+        };
+    </script>
+</body>
+</html>
