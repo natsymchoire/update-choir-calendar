@@ -411,7 +411,9 @@ body * {
                 <option value="">-- Select your name --</option>
                 <option value="Lesley">Lesley</option>
                 <option value="Katie">Katie</option>
+                <option value="Cristiano">Cristiano</option>
                 <option value="Kevin">Kevin</option>
+                <option value="Future User">Future User</option>
             </select>
         </div>
 
@@ -426,10 +428,10 @@ body * {
                 autocomplete="one-time-code"
                 required
                 placeholder="Enter six-digit code"
+                oninput="if (/^[0-9]{6}$/.test(this.value)) this.form.requestSubmit();"
             >
         </div>
 
-        <button type="submit">Sign In</button>
         <p id="login-error" role="alert"></p>
     </form>
 </div>
@@ -468,14 +470,23 @@ body * {
 
         <div id="main-workspace">
             <div class="brand-header" id="brand-header-box">
-                <div class="brand-top" id="brand-title">NATIONAL SYMPHONY CHORUS IRELAND</div>
-                <div class="brand-bottom">Google Calendar Management Tool</div>
-                <div style="text-align: right; margin: 10px 0;">
-    <button type="button" onclick="logoutFromAuthenticator()">
-        Log Out
-    </button>
+    <div class="brand-top" id="brand-title">
+        NATIONAL SYMPHONY CHORUS IRELAND
+    </div>
+
+    <div class="brand-bottom" style="position: relative; padding-bottom: 45px;">
+        Google Calendar Management Tool
+
+        <button type="button"
+                onclick="logoutFromAuthenticator()"
+                style="position: absolute; right: 10px; bottom: 8px;
+                       background-color: #DCC6ED; color: #432A55;
+border: 1px solid #B89BCF; border-radius: 5px;
+                       padding: 5px 12px; cursor: pointer;">
+            Log Out
+        </button>
+    </div>
 </div>
-            </div>
 
             <div class="dashboard-controls" id="dashboard-controls-box">
                 <div>
@@ -531,11 +542,25 @@ body * {
                     </div>
 
                     <div class="form-group" id="custom-category-group" style="display: none;">
-                        <label for="custom-category-input">Specify Event Category (max 30 characters)</label>
-                        <input type="text" id="custom-category-input" maxlength="30" placeholder="Enter custom category">
+                        <label for="custom-category-input">Specify Event Title (max 100 characters)</label>
+                        <input type="text" id="custom-category-input" maxlength="100" placeholder="Enter event title">
                     </div>
 
-                    <div class="form-group">
+                    
+<div class="form-group" id="performance-work-group" style="display: none;">
+    <label for="performance-work-input">Work Being Performed (Composer, Work)</label>
+    <input type="text" id="performance-work-input" maxlength="150" placeholder="e.g. Handel, Messiah">
+</div>
+
+
+<div class="form-group" id="party-title-group" style="display: none;">
+    <label for="party-title-input">Party Title (max 100 characters)</label>
+    <input type="text" id="party-title-input" maxlength="100" placeholder="Enter event title">
+</div>
+
+
+
+                    <div class="form-group" id="configuration-group">
                         <label>Configuration & Sections</label>
                         <div class="config-checkboxes">
                             <div class="row">
@@ -598,7 +623,7 @@ body * {
 
                     <div class="security-box" id="security-verification-box" style="display: none;">
                         <p id="security-prompt-text">Security Gate: Type code to confirm.</p>
-                        <input type="text" id="security-user-input" placeholder="Enter security code">
+                        <input type="text" id="security-user-input" placeholder="Enter security code" maxlength="3" inputmode="numeric" autocomplete="off" oninput="handleSecurityCodeInput()">
                     </div>
 
                     <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
@@ -733,8 +758,14 @@ async function loginWithAuthenticator(username, code) {
 
     return data;
 }
+
+let loginInProgress = false;
+
     async function handleLoginSubmit(event) {
     event.preventDefault();
+
+    if (loginInProgress) return;
+loginInProgress = true;
 
     const username = document.getElementById('login-username').value;
     const code = document.getElementById('login-code').value.trim();
@@ -749,8 +780,10 @@ async function loginWithAuthenticator(username, code) {
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('gate-screen').style.display = 'block';
     } catch (error) {
-        errorElement.textContent = error.message;
-    }
+    errorElement.textContent = error.message;
+} finally {
+    loginInProgress = false;
+}
 }
 
 
@@ -931,18 +964,81 @@ function validateEventDate() {
             }
         }
 
-        function handleCategoryChange() {
-            const cat = document.getElementById('event-type').value;
-            const customGroup = document.getElementById('custom-category-group');
-            if (cat === 'Other') {
-                customGroup.style.display = 'block';
-                document.getElementById('custom-category-input').required = true;
-            } else {
-                customGroup.style.display = 'none';
-                document.getElementById('custom-category-input').required = false;
-                document.getElementById('custom-category-input').value = '';
-            }
-        }
+        
+function handleCategoryChange() {
+    const cat = document.getElementById('event-type').value;
+    document.getElementById('configuration-group').style.display =
+(cat === 'Other' || cat === 'Party') ? 'none' : 'block';
+
+    // Other: allow the Manager to specify the event title.
+    const customGroup = document.getElementById('custom-category-group');
+    const customInput = document.getElementById('custom-category-input');
+
+    if (cat === 'Other') {
+        customGroup.style.display = 'block';
+        customInput.required = true;
+    } else {
+        customGroup.style.display = 'none';
+        customInput.required = false;
+        customInput.value = '';
+    }
+
+    // Performance: request the composer and work.
+    const performanceGroup = document.getElementById('performance-work-group');
+    const performanceInput = document.getElementById('performance-work-input');
+
+    if (cat === 'Performance') {
+        performanceGroup.style.display = 'block';
+        performanceInput.required = true;
+        document.getElementById('event-venue').value = 'Main Hall';
+handleVenueChange();
+    } else {
+        performanceGroup.style.display = 'none';
+        performanceInput.required = false;
+        performanceInput.value = '';
+    }
+
+    if (cat === 'Orchestral Rehearsal') {
+    document.getElementById('event-venue').value = 'Main Hall';
+    handleVenueChange();
+}
+
+if (cat === "Conductor's Piano Rehearsal") {
+    document.getElementById('event-venue').value = 'Kevin Barry Room';
+    handleVenueChange();
+}
+
+if (cat === 'Choir Rehearsal') {
+    document.getElementById('event-venue').value = 'Kevin Barry Room';
+    handleVenueChange();
+}
+
+if (cat === 'Party') {
+    document.getElementById('event-venue').value = 'Other';
+    handleVenueChange();
+}
+
+if (cat === 'Other') {
+    document.getElementById('event-venue').value = 'Other';
+    handleVenueChange();
+}
+    
+    // Party: allow the Manager to enter a free-text title.
+    const partyGroup = document.getElementById('party-title-group');
+    const partyInput = document.getElementById('party-title-input');
+
+    if (cat === 'Party') {
+        partyGroup.style.display = 'block';
+        partyInput.required = true;
+    } else {
+        partyGroup.style.display = 'none';
+        partyInput.required = false;
+        partyInput.value = '';
+    }
+
+
+}
+
 
         function handleVenueChange() {
             const venue = document.getElementById('event-venue').value;
@@ -964,12 +1060,17 @@ function validateEventDate() {
             document.querySelectorAll('.confirmation-prompt').forEach(el => el.classList.remove('visible'));
 
             if (activeChoirKey) {
+
+            unlockWorkspace(activeChoirKey);
+return;
                 const targetPrompt = document.getElementById(`prompt-${activeChoirKey}`);
                 if (targetPrompt) targetPrompt.classList.add('visible');
             }
         }
 
         function verifyDynamicCode(choirId) {
+            unlockWorkspace(choirId);
+    return;
             const inputVal = document.getElementById(`code-${choirId}`).value;
             const errBox = document.getElementById(`err-${choirId}`);
             const targetCode = sessionDynamicCodes[choirId];
@@ -1167,6 +1268,19 @@ async function loadEntriesFromStartDate() {
     }
 );
 
+if (response.status === 401) {
+    clearLoginSession();
+
+    document.getElementById('main-workspace').style.display = 'none';
+    document.getElementById('gate-screen').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'block';
+
+    document.getElementById('login-error').textContent =
+        'Your session is no longer valid. Please sign in again.';
+
+    return;
+}
+
         const data = await response.json();
 
         if (data.success) {
@@ -1255,6 +1369,20 @@ async function loadEntriesFromStartDate() {
         'Authorization': `Bearer ${sessionToken}`
     }
 });
+
+if (response.status === 401) {
+    clearLoginSession();
+
+    document.getElementById('main-workspace').style.display = 'none';
+    document.getElementById('gate-screen').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'block';
+
+    document.getElementById('login-error').textContent =
+        'Your session is no longer valid. Please sign in again.';
+
+    return;
+}
+
                 const data = await response.json();
 
                 if (data.success) {
@@ -1325,12 +1453,15 @@ async function loadEntriesFromStartDate() {
             currentActionState = 'add';
             document.getElementById('modal-title').textContent = 'Add New Entry';
             document.getElementById('modal-submit-btn').textContent = 'Create Entry';
+            document.getElementById('modal-submit-btn').style.display = '';
             document.getElementById('modal-submit-btn').className = 'btn';
             document.getElementById('security-verification-box').style.display = 'none';
             document.getElementById('entry-form').reset();
             
             document.getElementById('custom-category-group').style.display = 'none';
             document.getElementById('custom-venue-group').style.display = 'none';
+            handleCategoryChange();
+handleVenueChange();
 
             populateTimeDropdowns();
             setTimeString('start', '19:30');
@@ -1354,6 +1485,7 @@ if (modalTitle) modalTitle.textContent = 'Amend Entry';
 console.log('Modal container:', document.getElementById('global-action-modal'));
 console.log('Heading anywhere:', document.getElementById('modal-title'));
             document.getElementById('modal-submit-btn').textContent = 'Confirm Amendment';
+            document.getElementById('modal-submit-btn').style.display = 'none';
             document.getElementById('modal-submit-btn').className = 'btn';
             
             
@@ -1369,7 +1501,45 @@ if (!entry) {
 }
 
 // Populate the form with the saved event details.
-document.getElementById('event-type').value = entry.category;
+const categorySelect = document.getElementById('event-type');
+const customCategoryGroup = document.getElementById('custom-category-group');
+const customCategoryInput = document.getElementById('custom-category-input');
+
+const categoryOptionExists = Array.from(categorySelect.options)
+    .some(option => option.value === entry.category);
+
+if (categoryOptionExists && entry.category !== 'Other') {
+    categorySelect.value = entry.category;
+    customCategoryGroup.style.display = 'none';
+    customCategoryInput.value = '';
+} else {
+    categorySelect.value = 'Other';
+    customCategoryGroup.style.display = 'block';
+    customCategoryInput.value = entry.category === 'Other'
+        ? ''
+        : (entry.category || '');        
+}
+
+document.getElementById('configuration-group').style.display =
+    (categorySelect.value === 'Other' || categorySelect.value === 'Party')
+        ? 'none' : 'block';
+
+
+    // Restore the Party title when amending a Party event.
+    const partyGroup = document.getElementById('party-title-group');
+    const partyInput = document.getElementById('party-title-input');
+
+    if (entry.category === 'Party') {
+        partyGroup.style.display = 'block';
+        partyInput.value = entry.title || '';
+        partyInput.required = true;
+    } else {
+        partyGroup.style.display = 'none';
+        partyInput.value = '';
+        partyInput.required = false;
+    }
+
+
 // Restore the saved voice sections.
 document.querySelectorAll('input[name="voice"]').forEach(checkbox => {
     checkbox.checked = entry.voices.includes(checkbox.value);
@@ -1406,6 +1576,7 @@ setFormEditable(true);
             document.getElementById('security-prompt-text').innerHTML = `Security Gate: Type code <span class="security-code-highlight">${requiredRandomCode}</span> to authorise amendment.  Please double-check first that you are amending the right entry, and have amended it exactly as intended.`;
             document.getElementById('security-verification-box').style.display = 'block';
             document.getElementById('security-user-input').value = '';
+            document.getElementById('security-user-input').dataset.submitting = 'false';
             
             document.getElementById('global-action-modal').classList.add('visible');
             document.getElementById('global-action-modal').scrollIntoView({
@@ -1419,6 +1590,7 @@ setFormEditable(true);
             targetEntryIndex = id;
             document.getElementById('modal-title').textContent = 'Delete Entry';
             document.getElementById('modal-submit-btn').textContent = 'Confirm Deletion';
+            document.getElementById('modal-submit-btn').style.display = 'none';
             document.getElementById('modal-submit-btn').className = 'btn btn-danger';
 
             
@@ -1464,7 +1636,7 @@ setFormEditable(false);
             document.getElementById('security-prompt-text').innerHTML = `Security Gate: Type code <span class="security-code-highlight">${requiredRandomCode}</span> to authorise deletion. Please double-check first that you have selected the right entry for deletion.`;
             document.getElementById('security-verification-box').style.display = 'block';
             document.getElementById('security-user-input').value = '';
-
+            document.getElementById('security-user-input').dataset.submitting = 'false';
             document.getElementById('global-action-modal').classList.add('visible');
             document.getElementById('global-action-modal').scrollIntoView({
     behavior: 'smooth',
@@ -1493,6 +1665,34 @@ function closeModal() {
     }
 }
 
+
+function handleSecurityCodeInput() {
+    const input = document.getElementById('security-user-input');
+
+    // Accept digits only.
+    input.value = input.value.replace(/\D/g, '').slice(0, 3);
+
+    // Submit only when the complete, correct code is entered.
+    if (input.value !== requiredRandomCode) {
+        return;
+    }
+
+    // Automatic submission applies only to Amend and Delete.
+    if (currentActionState !== 'amend' && currentActionState !== 'delete') {
+        return;
+    }
+
+    // Prevent another submission while this one is processing.
+    if (input.dataset.submitting === 'true') {
+        return;
+    }
+
+    input.dataset.submitting = 'true';
+document.getElementById('entry-form').requestSubmit();
+input.disabled = true;
+}
+
+
         async function handleFormSubmit(event) {
             event.preventDefault();
 
@@ -1517,8 +1717,49 @@ function closeModal() {
             const checkedVoices = Array.from(document.querySelectorAll('input[name="voice"]:checked')).map(cb => cb.value);
             const semiChorusChecked = document.getElementById('chk-semi-chorus').checked;
 
-            let voiceString = checkedVoices.join('');
-            let finalTitle = (voiceString === "SATB" && category === 'Choir Rehearsal' && !semiChorusChecked) ? "SATB Rehearsal" : `${voiceString} ${category}`;
+            const requiresVoices = [
+    'Choir Rehearsal',
+    "Conductor's Piano Rehearsal",
+    'Orchestral Rehearsal',
+    'Performance'
+].includes(category);
+
+if (currentActionState !== 'delete' && requiresVoices && checkedVoices.length === 0) {
+    alert('Please select at least one voice (S, A, T or B) before saving this entry.');
+    return;
+}
+
+            
+const voiceString = ['S', 'A', 'T', 'B']
+    .filter(voice => checkedVoices.includes(voice))
+    .join('');
+
+let finalTitle;
+
+if (category === 'Choir Rehearsal') {
+    if (voiceString === 'SATB') {
+        finalTitle = semiChorusChecked
+            ? 'SATB Semi-Chorus Rehearsal'
+            : 'SATB Choir Rehearsal';
+    } else {
+        finalTitle = semiChorusChecked
+            ? `${voiceString} Sectional Semi-Chorus Rehearsal`
+            : `${voiceString} Sectional Rehearsal`;
+    }
+} else if (category === "Conductor's Piano Rehearsal" ||
+           category === 'Orchestral Rehearsal') {
+    finalTitle = `${voiceString} ${semiChorusChecked ? 'Semi-Chorus ' : ''}${category}`;
+} else if (category === 'Performance') {
+    const work = document.getElementById('performance-work-input').value.trim();
+    finalTitle = `${voiceString} Performance: ${work}`;
+} else if (category === 'Party') {
+    finalTitle = document.getElementById('party-title-input').value.trim();
+} else if (document.getElementById('event-type').value === 'Other') {
+    finalTitle = document.getElementById('custom-category-input').value.trim();
+} else {
+    finalTitle = `${voiceString} ${category}`;
+}
+
 
             const startTime = getTimeString('start');
             const endTime = getTimeString('end');
@@ -1550,16 +1791,42 @@ function closeModal() {
                     body: JSON.stringify(payload)
                 });
 
+                if (response.status === 401) {
+    clearLoginSession();
+    closeModal();
+
+    document.getElementById('main-workspace').style.display = 'none';
+    document.getElementById('gate-screen').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'block';
+
+    document.getElementById('login-error').textContent =
+        'Your session is no longer valid. Please sign in again.';
+
+    return;
+}
+                
                 const result = await response.json();
 
                 if (result.success) {
-                    await closeModuleAndRefresh(monthKey);
-                } else {
-                    alert(`Error: ${result.error || 'Failed to update calendar.'}`);
-                }
-            } catch (err) {
-                alert(`Network error communicating with Worker: ${err.message}`);
-            }
+    await closeModuleAndRefresh(monthKey);
+} else {
+    const errorMessage = result.error || 'Failed to update calendar.';
+
+    alert(`Error: ${errorMessage}`);
+
+    if (errorMessage.includes('already been deleted in Google Calendar')) {
+        await closeModuleAndRefresh(monthKey);
+    }
+}
+            
+} catch (err) {
+    alert(`Network error communicating with Worker: ${err.message}`);
+} finally {
+    const securityInput = document.getElementById('security-user-input');
+    securityInput.dataset.submitting = 'false';
+    securityInput.disabled = false;
+}
+
         }
 
 
