@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,11 +20,14 @@
             --success-bg: #f0fdf4;
             --success-text: #166534;
             --success-border: #bbf7d0;
-            
-            --choir-1-bg: #d97706; /* Ochre */
-            --choir-2-bg: #0369a1; /* Slate Blue */
-            --choir-3-bg: #4f46e5; /* Indigo */
-            
+
+            --choir-1-bg: #d97706;
+            /* NSCI - Ochre */
+            --choir-2-bg: #24A9EF;
+            /* Cór Linn - Bright Blue */
+            --choir-3-bg: #14BAA4;
+            /* Cór na nÓg - Turquoise Green */
+
             --radius: 8px;
             --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
         }
@@ -72,7 +76,9 @@
             margin-bottom: 0.5rem;
         }
 
-        select, input[type="date"], input[type="text"] {
+        select,
+        input[type="date"],
+        input[type="text"] {
             width: 100%;
             padding: 0.75rem;
             font-size: 0.95rem;
@@ -84,13 +90,15 @@
             transition: border-color 0.2s;
         }
 
-        select:disabled, input:disabled {
+        select:disabled,
+        input:disabled {
             background-color: #f1f5f9;
             color: var(--text-muted);
             cursor: not-allowed;
         }
 
-        select:focus, input:focus {
+        select:focus,
+        input:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
@@ -111,44 +119,44 @@
 
         /* Choir colour confirmation buttons */
 
-#colour-button-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
-    max-width: 320px;
-    margin: 20px auto;
-}
+        #colour-button-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            max-width: 320px;
+            margin: 20px auto;
+        }
 
-.choir-colour-button {
-    height: 65px;
-    width: 100%;
-    border: 2px solid #ffffff;
-    border-radius: 10px;
-    cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
+        .choir-colour-button {
+            height: 65px;
+            width: 100%;
+            border: 2px solid #ffffff;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
 
-.choir-colour-button:hover {
-    outline: 3px solid #374151;
-    outline-offset: 2px;
-}
+        .choir-colour-button:hover {
+            outline: 3px solid #374151;
+            outline-offset: 2px;
+        }
 
-.choir-colour-button:focus-visible {
-    outline: 3px solid #111827;
-    outline-offset: 3px;
-}
+        .choir-colour-button:focus-visible {
+            outline: 3px solid #111827;
+            outline-offset: 3px;
+        }
 
-#colour-confirmation-message {
-    text-align: center;
-    font-weight: 600;
-    line-height: 1.6;
-}
+        #colour-confirmation-message {
+            text-align: center;
+            font-weight: 600;
+            line-height: 1.6;
+        }
 
-#colour-confirmation-feedback {
-    text-align: center;
-    font-weight: bold;
-    min-height: 24px;
-}
+        #colour-confirmation-feedback {
+            text-align: center;
+            font-weight: bold;
+            min-height: 24px;
+        }
 
         .error-text {
             color: var(--danger);
@@ -172,7 +180,7 @@
             border-radius: 6px;
             overflow: hidden;
             margin-bottom: 1.5rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
 
@@ -192,7 +200,7 @@
             font-size: 1.1rem;
             font-style: italic;
             font-weight: 600;
-            border-top: 1px solid rgba(0,0,0,0.1);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
         }
 
         .dashboard-controls {
@@ -227,6 +235,7 @@
         .btn-danger {
             background: var(--danger);
         }
+
         .btn-danger:hover {
             background: #b91c1c;
         }
@@ -337,7 +346,7 @@
             gap: 1rem;
         }
 
-        .time-row > div {
+        .time-row>div {
             flex: 1;
         }
 
@@ -347,194 +356,180 @@
         }
 
         /* Printable choir schedule */
-@media print {
+        @media print {
 
-    @page {
-        size: A4 portrait;
-        margin: 15mm;
-    }
+            @page {
+                size: A4 portrait;
+                margin: 15mm;
+            }
 
-    /* Hide the normal interface without reserving space */
-body * {
-    visibility: hidden !important;
-}
+            /* Hide the normal interface without reserving space */
+            body * {
+                visibility: hidden !important;
+            }
 
-#main-workspace > *:not(#print-schedule-content) {
-    display: none !important;
-}
+            #main-workspace>*:not(#print-schedule-content) {
+                display: none !important;
+            }
 
-    /* Show only the printable schedule */
-    #print-schedule-content,
-    #print-schedule-content * {
-        visibility: visible !important;
-    }
+            /* Show only the printable schedule */
+            #print-schedule-content,
+            #print-schedule-content * {
+                visibility: visible !important;
+            }
 
-    #print-schedule-content {
-        display: block !important;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        background: white;
-        color: black;
-        font-family: Arial, sans-serif;
-    }
+            #print-schedule-content {
+                display: block !important;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                background: white;
+                color: black;
+                font-family: Arial, sans-serif;
+            }
 
-    /* Schedule heading */
-    #print-schedule-content h2 {
-        text-align: center;
-        font-size: 15pt;
-        margin: 0 0 5mm;
-    }
+            /* Schedule heading */
+            #print-schedule-content h2 {
+                text-align: center;
+                font-size: 15pt;
+                margin: 0 0 5mm;
+            }
 
-    #print-schedule-content h3 {
-        text-align: center;
-        font-size: 11pt;
-        font-weight: normal;
-        margin: 0 0 8mm;
-    }
+            #print-schedule-content h3 {
+                text-align: center;
+                font-size: 11pt;
+                font-weight: normal;
+                margin: 0 0 8mm;
+            }
 
-    /* Two-column schedule */
-    .print-entries {
-        column-count: 2;
-        column-gap: 12mm;
-        column-fill: auto;
-        font-size: 9.5pt;
-        line-height: 1.3;
-    }
+            /* Two-column schedule */
+            .print-entries {
+                column-count: 2;
+                column-gap: 12mm;
+                column-fill: auto;
+                font-size: 9.5pt;
+                line-height: 1.3;
+            }
 
-    /* Keep each event together */
-    .print-entry {
-        break-inside: avoid;
-        page-break-inside: avoid;
-        margin-bottom: 4mm;
-    }
+            /* Keep each event together */
+            .print-entry {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                margin-bottom: 4mm;
+            }
 
-    .print-entry strong {
-        display: block;
-        margin-bottom: 1mm;
-    }
-}
+            .print-entry strong {
+                display: block;
+                margin-bottom: 1mm;
+            }
+        }
 
-/* Give time selectors more room on mobile phones */
-@media screen and (max-width: 600px) {
-    .time-row {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-    }
+        /* Give time selectors more room on mobile phones */
+        @media screen and (max-width: 600px) {
+            .time-row {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+            }
 
-    .time-row > div {
-        width: 100%;
-        min-width: 0;
-    }
+            .time-row>div {
+                width: 100%;
+                min-width: 0;
+            }
 
-    .time-select-group select {
-        min-width: 0;
-        width: 100%;
-        box-sizing: border-box;
-    }
-}
-
+            .time-select-group select {
+                min-width: 0;
+                width: 100%;
+                box-sizing: border-box;
+            }
+        }
     </style>
 </head>
+
 <body>
 
     <div class="container">
 
         <div id="login-screen">
-    <h2>National Symphony Chorus Ireland — Sign In</h2>
+            <h2>National Symphony Chorus Ireland — Sign In</h2>
 
-    <form id="login-form" onsubmit="handleLoginSubmit(event)">
-        <div class="form-group">
-            <label for="login-username">User</label>
-            <select id="login-username" required>
-                <option value="">-- Select your name --</option>
-                <option value="Lesley">Lesley</option>
-                <option value="Katie">Katie</option>
-                <option value="Cristiano">Cristiano</option>
-                <option value="Kevin">Kevin</option>
-                <option value="Future User">Future User</option>
-            </select>
+            <form id="login-form" onsubmit="handleLoginSubmit(event)">
+                <div class="form-group">
+                    <label for="login-username">User</label>
+                    <select id="login-username" required>
+                        <option value="">-- Select your name --</option>
+                        <option value="Lesley">Lesley</option>
+                        <option value="Katie">Katie</option>
+                        <option value="Cristiano">Cristiano</option>
+                        <option value="Kevin">Kevin</option>
+                        <option value="Future User">Future User</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="login-code">Google Authenticator code</label>
+                    <input id="login-code" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6"
+                        autocomplete="one-time-code" required placeholder="Enter six-digit code"
+                        oninput="if (/^[0-9]{6}$/.test(this.value)) this.form.requestSubmit();">
+                </div>
+
+                <p id="login-error" role="alert"></p>
+            </form>
         </div>
-
-        <div class="form-group">
-            <label for="login-code">Google Authenticator code</label>
-            <input
-                id="login-code"
-                type="text"
-                inputmode="numeric"
-                pattern="[0-9]{6}"
-                maxlength="6"
-                autocomplete="one-time-code"
-                required
-                placeholder="Enter six-digit code"
-                oninput="if (/^[0-9]{6}$/.test(this.value)) this.form.requestSubmit();"
-            >
-        </div>
-
-        <p id="login-error" role="alert"></p>
-    </form>
-</div>
 
         <div id="gate-screen" style="display: none;">
             <h2>Which choir's calendar do you want to edit?</h2>
-            
+
             <div class="form-group">
                 <label for="choir-dropdown">Select Choir</label>
                 <select id="choir-dropdown" onchange="handleChoirSelection()">
                     <option value="" disabled selected>-- Choose a choir calendar --</option>
                     <option value="choir1">National Symphony Chorus Ireland</option>
-                    <option value="choir2">Choir B</option>
-                    <option value="choir3">Choir C</option>
+                    <option value="choir2">Cór Linn</option>
+                    <option value="choir3">Cór na nÓg</option>
                 </select>
             </div>
 
             <div id="colour-confirmation" class="confirmation-prompt">
 
-    <p id="colour-confirmation-message"></p>
+                <p id="colour-confirmation-message"></p>
 
-    <div id="colour-button-grid"></div>
+                <div id="colour-button-grid"></div>
 
-    <p id="colour-confirmation-feedback"
-       aria-live="polite"></p>
+                <p id="colour-confirmation-feedback" aria-live="polite"></p>
 
-</div>
+            </div>
         </div>
 
         <div id="main-workspace">
             <div class="brand-header" id="brand-header-box">
-    <div class="brand-top" id="brand-title">
-        NATIONAL SYMPHONY CHORUS IRELAND
-    </div>
+                <div class="brand-top" id="brand-title">
+                    NATIONAL SYMPHONY CHORUS IRELAND
+                </div>
 
-    <div class="brand-bottom" style="position: relative; padding-bottom: 45px;">
-        Google Calendar Management Tool
+                <div class="brand-bottom" style="position: relative; padding-bottom: 45px;">
+                    Google Calendar Management Tool
 
-        <button type="button"
-                onclick="logoutFromAuthenticator()"
-                style="position: absolute; right: 10px; bottom: 8px;
+                    <button type="button" onclick="logoutFromAuthenticator()" style="position: absolute; right: 10px; bottom: 8px;
                        background-color: #DCC6ED; color: #432A55;
 border: 1px solid #B89BCF; border-radius: 5px;
                        padding: 5px 12px; cursor: pointer;">
-            Log Out
-        </button>
-    </div>
-</div>
+                        Log Out
+                    </button>
+                </div>
+            </div>
 
             <div class="dashboard-controls" id="dashboard-controls-box">
                 <div>
-    <label for="start-date-selector" style="font-size: 0.875rem; margin-bottom: 0.4rem;">
-        Show entries beginning on
-    </label>
-    <input
-        type="date"
-        id="start-date-selector"
-        onchange="handleStartDateChange()"
-    >
-</div>
+                    <label for="start-date-selector" style="font-size: 0.875rem; margin-bottom: 0.4rem;">
+                        Show entries beginning on
+                    </label>
+                    <input type="date" id="start-date-selector" onchange="handleStartDateChange()">
+                </div>
                 <div id="later-year-container" style="display: none;">
-                    <label for="later-year-selector" style="font-size: 0.75rem; margin-bottom: 0.2rem;">Select Year</label>
+                    <label for="later-year-selector" style="font-size: 0.75rem; margin-bottom: 0.2rem;">Select
+                        Year</label>
                     <select id="later-year-selector" onchange="handleYearChange()">
                         <option value="" disabled selected>-- Choose Year --</option>
                         <option value="2027">2027</option>
@@ -544,19 +539,20 @@ border: 1px solid #B89BCF; border-radius: 5px;
                     </select>
                 </div>
                 <div id="later-month-container" style="display: none;">
-                    <label for="later-month-selector" style="font-size: 0.75rem; margin-bottom: 0.2rem;">Select Month</label>
+                    <label for="later-month-selector" style="font-size: 0.75rem; margin-bottom: 0.2rem;">Select
+                        Month</label>
                     <select id="later-month-selector" onchange="loadLaterMonthsForYear()">
                         <option value="" disabled selected>-- Choose Month --</option>
                     </select>
                 </div>
                 <div style="align-self: flex-end; display: flex; gap: 0.75rem; align-items: center;">
-    <button class="btn" onclick="openAddModal()">+ Add New Entry</button>
+                    <button class="btn" onclick="openAddModal()">+ Add New Entry</button>
 
-    <button class="btn" onclick="openPrintPanel()""
-            style="background-color: #a8d5a2; color: #173b1a;">
-        Print Schedule
-    </button>
-</div>
+                    <button class="btn" onclick="openPrintPanel()""
+            style=" background-color: #a8d5a2; color: #173b1a;">
+                        Print Schedule
+                    </button>
+                </div>
             </div>
 
             <!-- Global Modal Container for Actions -->
@@ -580,17 +576,18 @@ border: 1px solid #B89BCF; border-radius: 5px;
                         <input type="text" id="custom-category-input" maxlength="100" placeholder="Enter event title">
                     </div>
 
-                    
-<div class="form-group" id="performance-work-group" style="display: none;">
-    <label for="performance-work-input">Work Being Performed (Composer, Work)</label>
-    <input type="text" id="performance-work-input" maxlength="150" placeholder="e.g. Handel, Messiah">
-</div>
+
+                    <div class="form-group" id="performance-work-group" style="display: none;">
+                        <label for="performance-work-input">Work Being Performed (Composer, Work)</label>
+                        <input type="text" id="performance-work-input" maxlength="150"
+                            placeholder="e.g. Handel, Messiah">
+                    </div>
 
 
-<div class="form-group" id="party-title-group" style="display: none;">
-    <label for="party-title-input">Party Title (max 100 characters)</label>
-    <input type="text" id="party-title-input" maxlength="100" placeholder="Enter event title">
-</div>
+                    <div class="form-group" id="party-title-group" style="display: none;">
+                        <label for="party-title-input">Party Title (max 100 characters)</label>
+                        <input type="text" id="party-title-input" maxlength="100" placeholder="Enter event title">
+                    </div>
 
 
 
@@ -603,23 +600,26 @@ border: 1px solid #B89BCF; border-radius: 5px;
                                 <label style="flex: 1;"><input type="checkbox" name="voice" value="T" checked> T</label>
                                 <label style="flex: 1;"><input type="checkbox" name="voice" value="B" checked> B</label>
                             </div>
-                            <div class="row" style="margin-top: 0.5rem; border-top: 1px solid #cbd5e1; padding-top: 0.35rem;">
-                                <label style="flex: 1;"><input type="checkbox" name="group" value="Full Choir" id="chk-full-choir" checked onchange="handleGroupChange('Full Choir')"> Full Choir</label>
-                                <label style="flex: 1;"><input type="checkbox" name="group" value="Semi-Chorus" id="chk-semi-chorus" onchange="handleGroupChange('Semi-Chorus')"> Semi-Chorus</label>
+                            <div class="row"
+                                style="margin-top: 0.5rem; border-top: 1px solid #cbd5e1; padding-top: 0.35rem;">
+                                <label style="flex: 1;"><input type="checkbox" name="group" value="Full Choir"
+                                        id="chk-full-choir" checked onchange="handleGroupChange('Full Choir')"> Full
+                                    Choir</label>
+                                <label style="flex: 1;"><input type="checkbox" name="group" value="Semi-Chorus"
+                                        id="chk-semi-chorus" onchange="handleGroupChange('Semi-Chorus')">
+                                    Semi-Chorus</label>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-group">
-    <label for="event-date-dropdown">Date</label>
-    <div style="display: flex; align-items: center; gap: 0.75rem;">
-        <div id="event-weekday" style="font-weight: 600; min-width: 95px;"></div>
-        <input type="date" id="event-date-dropdown" required
-       onchange="validateEventDate()"
-       oninput="validateEventDate()"
-       style="flex: 1; min-width: 0;">
-    </div>
-</div>
+                        <label for="event-date-dropdown">Date</label>
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <div id="event-weekday" style="font-weight: 600; min-width: 95px;"></div>
+                            <input type="date" id="event-date-dropdown" required onchange="validateEventDate()"
+                                oninput="validateEventDate()" style="flex: 1; min-width: 0;">
+                        </div>
+                    </div>
 
                     <div class="form-group time-row">
                         <div>
@@ -657,58 +657,57 @@ border: 1px solid #B89BCF; border-radius: 5px;
 
                     <div class="security-box" id="security-verification-box" style="display: none;">
                         <p id="security-prompt-text">Security Gate: Type code to confirm.</p>
-                        <input type="text" id="security-user-input" placeholder="Enter security code" maxlength="3" inputmode="numeric" autocomplete="off" oninput="handleSecurityCodeInput()">
+                        <input type="text" id="security-user-input" placeholder="Enter security code" maxlength="3"
+                            inputmode="numeric" autocomplete="off" oninput="handleSecurityCodeInput()">
                     </div>
 
                     <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
                         <button type="submit" class="btn" id="modal-submit-btn">Save Entry</button>
-                        <button type="button" class="btn" style="background: #64748b;" onclick="closeModal()">Cancel</button>
+                        <button type="button" class="btn" style="background: #64748b;"
+                            onclick="closeModal()">Cancel</button>
                     </div>
                 </form>
             </div>
 
             <div id="print-schedule-content" style="display: none;"></div>
 
-            <div id="print-panel"
-     style="display: none; background: #f5faf5; border: 1px solid #a8d5a2;
+            <div id="print-panel" style="display: none; background: #f5faf5; border: 1px solid #a8d5a2;
             border-radius: 8px; padding: 1.25rem; margin: 1rem 0;">
 
-    <h3 style="margin-top: 0;">Print Schedule</h3>
+                <h3 style="margin-top: 0;">Print Schedule</h3>
 
-    <p style="font-size: 0.9rem;">
-        Choose the period you want to include in the printed schedule.
-    </p>
+                <p style="font-size: 0.9rem;">
+                    Choose the period you want to include in the printed schedule.
+                </p>
 
-    <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
 
-        <div>
-            <label for="print-from-date">From</label>
-            <input type="date" id="print-from-date">
-        </div>
+                    <div>
+                        <label for="print-from-date">From</label>
+                        <input type="date" id="print-from-date">
+                    </div>
 
-        <div>
-            <label for="print-to-date">To</label>
-            <input type="date" id="print-to-date">
-        </div>
+                    <div>
+                        <label for="print-to-date">To</label>
+                        <input type="date" id="print-to-date">
+                    </div>
 
-    </div>
+                </div>
 
-    <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
-        <button type="button" class="btn"
-                onclick="closePrintPanel()">
-            Cancel
-        </button>
+                <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+                    <button type="button" class="btn" onclick="closePrintPanel()">
+                        Cancel
+                    </button>
 
-        <button type="button" class="btn"
-                onclick="printSelectedSchedule()"
-                style="background-color: #a8d5a2; color: #173b1a;">
-            Print
-        </button>
-    </div>
+                    <button type="button" class="btn" onclick="printSelectedSchedule()"
+                        style="background-color: #a8d5a2; color: #173b1a;">
+                        Print
+                    </button>
+                </div>
 
-</div>
+            </div>
 
-            <div class="entries-section">                
+            <div class="entries-section">
                 <h3 id="entries-header">Existing Entries</h3>
                 <div id="entries-list-container"></div>
             </div>
@@ -723,102 +722,102 @@ border: 1px solid #B89BCF; border-radius: 5px;
         let sessionExpiresAt = null;
 
         function hasValidSession() {
-    return Boolean(
-        sessionToken &&
-        sessionExpiresAt &&
-        Math.floor(Date.now() / 1000) < sessionExpiresAt
-    );
-}
+            return Boolean(
+                sessionToken &&
+                sessionExpiresAt &&
+                Math.floor(Date.now() / 1000) < sessionExpiresAt
+            );
+        }
 
-function checkSessionExpiry() {
-    if (sessionToken && !hasValidSession()) {
-        clearLoginSession();
+        function checkSessionExpiry() {
+            if (sessionToken && !hasValidSession()) {
+                clearLoginSession();
 
-        document.getElementById('main-workspace').style.display = 'none';
-        document.getElementById('gate-screen').style.display = 'none';
-        document.getElementById('login-screen').style.display = 'block';
+                document.getElementById('main-workspace').style.display = 'none';
+                document.getElementById('gate-screen').style.display = 'none';
+                document.getElementById('login-screen').style.display = 'block';
 
-        document.getElementById('login-error').textContent =
-            'Your 60-minute session has expired. Please sign in again.';
-    }
-}
+                document.getElementById('login-error').textContent =
+                    'Your 60-minute session has expired. Please sign in again.';
+            }
+        }
 
-setInterval(checkSessionExpiry, 1000);
+        setInterval(checkSessionExpiry, 1000);
 
-function clearLoginSession() {
-    sessionToken = null;
-    sessionExpiresAt = null;
-}
+        function clearLoginSession() {
+            sessionToken = null;
+            sessionExpiresAt = null;
+        }
 
-async function logoutFromAuthenticator() {
-    const token = sessionToken;
+        async function logoutFromAuthenticator() {
+            const token = sessionToken;
 
-    clearLoginSession();
+            clearLoginSession();
 
-    if (token) {
-        try {
-            await fetch(`${WORKER_URL}auth/logout`, {
+            if (token) {
+                try {
+                    await fetch(`${WORKER_URL}auth/logout`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                } catch (error) {
+                    console.error('Logout request failed:', error);
+                }
+            }
+            document.getElementById('main-workspace').style.display = 'none';
+            document.getElementById('gate-screen').style.display = 'none';
+            document.getElementById('login-screen').style.display = 'block';
+        }
+
+        async function loginWithAuthenticator(username, code) {
+            const response = await fetch(`${WORKER_URL}auth/login`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, code })
             });
-        } catch (error) {
-            console.error('Logout request failed:', error);
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(data.error || 'Login unsuccessful.');
+            }
+
+            sessionToken = data.token;
+            sessionExpiresAt = data.expiresAt;
+
+            return data;
         }
-    }
-        document.getElementById('main-workspace').style.display = 'none';
-    document.getElementById('gate-screen').style.display = 'none';
-    document.getElementById('login-screen').style.display = 'block';
-}
 
-async function loginWithAuthenticator(username, code) {
-    const response = await fetch(`${WORKER_URL}auth/login`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ username, code })
-    });
+        let loginInProgress = false;
 
-    const data = await response.json();
+        async function handleLoginSubmit(event) {
+            event.preventDefault();
 
-    if (!response.ok || !data.success) {
-        throw new Error(data.error || 'Login unsuccessful.');
-    }
+            if (loginInProgress) return;
+            loginInProgress = true;
 
-    sessionToken = data.token;
-    sessionExpiresAt = data.expiresAt;
+            const username = document.getElementById('login-username').value;
+            const code = document.getElementById('login-code').value.trim();
+            const errorElement = document.getElementById('login-error');
 
-    return data;
-}
+            errorElement.textContent = '';
 
-let loginInProgress = false;
+            try {
+                await loginWithAuthenticator(username, code);
 
-    async function handleLoginSubmit(event) {
-    event.preventDefault();
-
-    if (loginInProgress) return;
-loginInProgress = true;
-
-    const username = document.getElementById('login-username').value;
-    const code = document.getElementById('login-code').value.trim();
-    const errorElement = document.getElementById('login-error');
-
-    errorElement.textContent = '';
-
-    try {
-        await loginWithAuthenticator(username, code);
-
-        document.getElementById('login-code').value = '';
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('gate-screen').style.display = 'block';
-    } catch (error) {
-    errorElement.textContent = error.message;
-} finally {
-    loginInProgress = false;
-}
-}
+                document.getElementById('login-code').value = '';
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('gate-screen').style.display = 'block';
+            } catch (error) {
+                errorElement.textContent = error.message;
+            } finally {
+                loginInProgress = false;
+            }
+        }
 
 
 
@@ -888,85 +887,86 @@ loginInProgress = true;
         }
 
         // Colours associated with the three choirs.
-const choirConfirmationColours = {
-    choir1: '#d97706', // Ochre
-    choir2: '#0369a1', // Slate Blue
-    choir3: '#4f46e5'  // Indigo
-};
+        // Colours associated with the three choirs.
+        const choirConfirmationColours = {
+            choir1: '#d97706', // NSCI - Ochre
+            choir2: '#24A9EF', // Cór Linn - Bright Blue
+            choir3: '#14BAA4'  // Cór na nÓg - Turquoise Green
+        };
 
-// Three additional colours.
-const extraConfirmationColours = [
-    '#16a34a', // Green
-    '#dc2626', // Red
-    '#9333ea'  // Purple
-];
+        // Three additional colours.
+        const extraConfirmationColours = [
+            '#16a34a', // Green
+            '#dc2626', // Red
+            '#9333ea'  // Purple
+        ];
 
-// Randomise the positions of the six colours.
-function shuffleConfirmationColours(colours) {
-    const shuffled = [...colours];
+        // Randomise the positions of the six colours.
+        function shuffleConfirmationColours(colours) {
+            const shuffled = [...colours];
 
-    for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
 
-    return shuffled;
-}
+            return shuffled;
+        }
 
-// Display six colour buttons for the selected choir.
-function showColourConfirmation(choirId) {
-    const dropdown = document.getElementById('choir-dropdown');
-    const choirName = dropdown.options[dropdown.selectedIndex].text;
+        // Display six colour buttons for the selected choir.
+        function showColourConfirmation(choirId) {
+            const dropdown = document.getElementById('choir-dropdown');
+            const choirName = dropdown.options[dropdown.selectedIndex].text;
 
-    const panel = document.getElementById('colour-confirmation');
-    const message = document.getElementById('colour-confirmation-message');
-    const grid = document.getElementById('colour-button-grid');
-    const feedback = document.getElementById('colour-confirmation-feedback');
+            const panel = document.getElementById('colour-confirmation');
+            const message = document.getElementById('colour-confirmation-message');
+            const grid = document.getElementById('colour-button-grid');
+            const feedback = document.getElementById('colour-confirmation-feedback');
 
-    message.innerHTML =
-    `You have selected<br>
+            message.innerHTML =
+                `You have selected<br>
      <strong style="font-size: 1.25em;">${choirName}</strong><br>
      To verify this choice, click/tap on the appropriate colour button for that choir.`;
 
-    feedback.textContent = '';
-    grid.innerHTML = '';
+            feedback.textContent = '';
+            grid.innerHTML = '';
 
-    const colours = shuffleConfirmationColours([
-        ...Object.values(choirConfirmationColours),
-        ...extraConfirmationColours
-    ]);
+            const colours = shuffleConfirmationColours([
+                ...Object.values(choirConfirmationColours),
+                ...extraConfirmationColours
+            ]);
 
-    colours.forEach(colour => {
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.className = 'choir-colour-button';
-        button.style.backgroundColor = colour;
-        button.setAttribute('aria-label', 'Select colour');
+            colours.forEach(colour => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'choir-colour-button';
+                button.style.backgroundColor = colour;
+                button.setAttribute('aria-label', 'Select colour');
 
-        button.addEventListener('click', () => {
-            if (colour !== choirConfirmationColours[choirId]) {
-                feedback.textContent = 'Wrong Colour: Please Try Again';
-                feedback.style.color = '#dc2626';
-                return;
-            }
+                button.addEventListener('click', () => {
+                    if (colour !== choirConfirmationColours[choirId]) {
+                        feedback.textContent = 'Wrong Colour: Please Try Again';
+                        feedback.style.color = '#dc2626';
+                        return;
+                    }
 
-            grid.style.display = 'none';
+                    grid.style.display = 'none';
 
-            feedback.textContent =
-                `Correct Choice. The ${choirName} Calendar Will Now Be Uploaded`;
-            feedback.style.color = '#15803d';
+                    feedback.textContent =
+                        `Correct Choice. The ${choirName} Calendar Will Now Be Uploaded`;
+                    feedback.style.color = '#15803d';
 
-            setTimeout(() => {
-                unlockWorkspace(choirId);
-            }, 2000);
-        });
+                    setTimeout(() => {
+                        unlockWorkspace(choirId);
+                    }, 2000);
+                });
 
-        grid.appendChild(button);
-    });
+                grid.appendChild(button);
+            });
 
-    grid.style.display = 'grid';
-    panel.classList.add('visible');
-}
+            grid.style.display = 'grid';
+            panel.classList.add('visible');
+        }
 
         function initMonthSelector() {
             const selector = document.getElementById('month-selector');
@@ -994,60 +994,60 @@ function showColourConfirmation(choirId) {
         }
 
         function populateModalDates(specificDateStr = null, specificDateText = null) {
-    const datePicker = document.getElementById('event-date-dropdown');
+            const datePicker = document.getElementById('event-date-dropdown');
 
-    // Today's date in Ireland, regardless of the computer's timezone.
-    const today = new Intl.DateTimeFormat('sv-SE', {
-        timeZone: 'Europe/Dublin',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
-    }).format(new Date());
+            // Today's date in Ireland, regardless of the computer's timezone.
+            const today = new Intl.DateTimeFormat('sv-SE', {
+                timeZone: 'Europe/Dublin',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            }).format(new Date());
 
-    // Prevent selecting dates in the past.
-    datePicker.min = today;
+            // Prevent selecting dates in the past.
+            datePicker.min = today;
 
-    // Amend and Delete show the selected event's original date.
-    // Add defaults to today.
-    datePicker.value = specificDateStr || today;
-updateEventWeekday();
-}
+            // Amend and Delete show the selected event's original date.
+            // Add defaults to today.
+            datePicker.value = specificDateStr || today;
+            updateEventWeekday();
+        }
 
-function updateEventWeekday() {
-    const dateStr = document.getElementById('event-date-dropdown').value;
-    const weekdayDisplay = document.getElementById('event-weekday');
+        function updateEventWeekday() {
+            const dateStr = document.getElementById('event-date-dropdown').value;
+            const weekdayDisplay = document.getElementById('event-weekday');
 
-    if (!dateStr) {
-        weekdayDisplay.textContent = '';
-        return;
-    }
+            if (!dateStr) {
+                weekdayDisplay.textContent = '';
+                return;
+            }
 
-    const date = new Date(dateStr + 'T12:00:00Z');
+            const date = new Date(dateStr + 'T12:00:00Z');
 
-    weekdayDisplay.textContent = date.toLocaleDateString('en-IE', {
-        timeZone: 'Europe/Dublin',
-        weekday: 'long'
-    });
-}
+            weekdayDisplay.textContent = date.toLocaleDateString('en-IE', {
+                timeZone: 'Europe/Dublin',
+                weekday: 'long'
+            });
+        }
 
-function validateEventDate() {
-    const datePicker = document.getElementById('event-date-dropdown');
+        function validateEventDate() {
+            const datePicker = document.getElementById('event-date-dropdown');
 
-    const today = new Intl.DateTimeFormat('sv-SE', {
-        timeZone: 'Europe/Dublin',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
-    }).format(new Date());
+            const today = new Intl.DateTimeFormat('sv-SE', {
+                timeZone: 'Europe/Dublin',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            }).format(new Date());
 
-    datePicker.min = today;
+            datePicker.min = today;
 
-    if (datePicker.value && datePicker.value < today) {
-        datePicker.value = today;
-    }
+            if (datePicker.value && datePicker.value < today) {
+                datePicker.value = today;
+            }
 
-    updateEventWeekday();
-}
+            updateEventWeekday();
+        }
 
         function handleGroupChange(changedGroup) {
             const fullChoir = document.getElementById('chk-full-choir');
@@ -1060,80 +1060,80 @@ function validateEventDate() {
             }
         }
 
-        
-function handleCategoryChange() {
-    const cat = document.getElementById('event-type').value;
-    document.getElementById('configuration-group').style.display =
-(cat === 'Other' || cat === 'Party') ? 'none' : 'block';
 
-    // Other: allow the Manager to specify the event title.
-    const customGroup = document.getElementById('custom-category-group');
-    const customInput = document.getElementById('custom-category-input');
+        function handleCategoryChange() {
+            const cat = document.getElementById('event-type').value;
+            document.getElementById('configuration-group').style.display =
+                (cat === 'Other' || cat === 'Party') ? 'none' : 'block';
 
-    if (cat === 'Other') {
-        customGroup.style.display = 'block';
-        customInput.required = true;
-    } else {
-        customGroup.style.display = 'none';
-        customInput.required = false;
-        customInput.value = '';
-    }
+            // Other: allow the Manager to specify the event title.
+            const customGroup = document.getElementById('custom-category-group');
+            const customInput = document.getElementById('custom-category-input');
 
-    // Performance: request the composer and work.
-    const performanceGroup = document.getElementById('performance-work-group');
-    const performanceInput = document.getElementById('performance-work-input');
+            if (cat === 'Other') {
+                customGroup.style.display = 'block';
+                customInput.required = true;
+            } else {
+                customGroup.style.display = 'none';
+                customInput.required = false;
+                customInput.value = '';
+            }
 
-    if (cat === 'Performance') {
-        performanceGroup.style.display = 'block';
-        performanceInput.required = true;
-        document.getElementById('event-venue').value = 'Main Hall';
-handleVenueChange();
-    } else {
-        performanceGroup.style.display = 'none';
-        performanceInput.required = false;
-        performanceInput.value = '';
-    }
+            // Performance: request the composer and work.
+            const performanceGroup = document.getElementById('performance-work-group');
+            const performanceInput = document.getElementById('performance-work-input');
 
-    if (cat === 'Orchestral Rehearsal') {
-    document.getElementById('event-venue').value = 'Main Hall';
-    handleVenueChange();
-}
+            if (cat === 'Performance') {
+                performanceGroup.style.display = 'block';
+                performanceInput.required = true;
+                document.getElementById('event-venue').value = 'Main Hall';
+                handleVenueChange();
+            } else {
+                performanceGroup.style.display = 'none';
+                performanceInput.required = false;
+                performanceInput.value = '';
+            }
 
-if (cat === "Conductor's Piano Rehearsal") {
-    document.getElementById('event-venue').value = 'Kevin Barry Room';
-    handleVenueChange();
-}
+            if (cat === 'Orchestral Rehearsal') {
+                document.getElementById('event-venue').value = 'Main Hall';
+                handleVenueChange();
+            }
 
-if (cat === 'Choir Rehearsal') {
-    document.getElementById('event-venue').value = 'Kevin Barry Room';
-    handleVenueChange();
-}
+            if (cat === "Conductor's Piano Rehearsal") {
+                document.getElementById('event-venue').value = 'Kevin Barry Room';
+                handleVenueChange();
+            }
 
-if (cat === 'Party') {
-    document.getElementById('event-venue').value = 'Other';
-    handleVenueChange();
-}
+            if (cat === 'Choir Rehearsal') {
+                document.getElementById('event-venue').value = 'Kevin Barry Room';
+                handleVenueChange();
+            }
 
-if (cat === 'Other') {
-    document.getElementById('event-venue').value = 'Other';
-    handleVenueChange();
-}
-    
-    // Party: allow the Manager to enter a free-text title.
-    const partyGroup = document.getElementById('party-title-group');
-    const partyInput = document.getElementById('party-title-input');
+            if (cat === 'Party') {
+                document.getElementById('event-venue').value = 'Other';
+                handleVenueChange();
+            }
 
-    if (cat === 'Party') {
-        partyGroup.style.display = 'block';
-        partyInput.required = true;
-    } else {
-        partyGroup.style.display = 'none';
-        partyInput.required = false;
-        partyInput.value = '';
-    }
+            if (cat === 'Other') {
+                document.getElementById('event-venue').value = 'Other';
+                handleVenueChange();
+            }
+
+            // Party: allow the Manager to enter a free-text title.
+            const partyGroup = document.getElementById('party-title-group');
+            const partyInput = document.getElementById('party-title-input');
+
+            if (cat === 'Party') {
+                partyGroup.style.display = 'block';
+                partyInput.required = true;
+            } else {
+                partyGroup.style.display = 'none';
+                partyInput.required = false;
+                partyInput.value = '';
+            }
 
 
-}
+        }
 
 
         function handleVenueChange() {
@@ -1157,8 +1157,8 @@ if (cat === 'Other') {
 
             if (activeChoirKey) {
 
-            showColourConfirmation(activeChoirKey);
-return;
+                showColourConfirmation(activeChoirKey);
+                return;
                 const targetPrompt = document.getElementById(`prompt-${activeChoirKey}`);
                 if (targetPrompt) targetPrompt.classList.add('visible');
             }
@@ -1166,7 +1166,7 @@ return;
 
         function verifyDynamicCode(choirId) {
             unlockWorkspace(choirId);
-    return;
+            return;
 
             const inputVal = document.getElementById(`code-${choirId}`).value;
             const errBox = document.getElementById(`err-${choirId}`);
@@ -1184,13 +1184,6 @@ return;
 
         function unlockWorkspace(choirId) {
 
-            if (choirId !== 'choir1') {
-    const choirName = choirId === 'choir2' ? 'Choir B' : 'Choir C';
-
-    alert(`${choirName} Calendar has not yet been configured.`);
-    return;
-}
-
             document.getElementById('gate-screen').style.display = 'none';
             document.getElementById('main-workspace').style.display = 'block';
 
@@ -1201,98 +1194,98 @@ return;
                 brandTitle.textContent = "NATIONAL SYMPHONY CHORUS IRELAND";
                 brandBox.style.backgroundColor = "var(--choir-1-bg)";
             } else if (choirId === 'choir2') {
-                brandTitle.textContent = "CHOIR B";
+                brandTitle.textContent = "CÓR LINN";
                 brandBox.style.backgroundColor = "var(--choir-2-bg)";
             } else if (choirId === 'choir3') {
-                brandTitle.textContent = "CHOIR C";
+                brandTitle.textContent = "CÓR NA nÓG";
                 brandBox.style.backgroundColor = "var(--choir-3-bg)";
             }
 
             const today = new Intl.DateTimeFormat('sv-SE', {
-    timeZone: 'Europe/Dublin',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit'
-}).format(new Date());
+                timeZone: 'Europe/Dublin',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            }).format(new Date());
 
-const startDateSelector = document.getElementById('start-date-selector');
-startDateSelector.min = today;
-startDateSelector.value = today;
+            const startDateSelector = document.getElementById('start-date-selector');
+            startDateSelector.min = today;
+            startDateSelector.value = today;
             loadEntriesFromStartDate();
         }
 
-      function openPrintPanel() {
-    const panel = document.getElementById('print-panel');
-    const fromDate = document.getElementById('print-from-date');
-    const toDate = document.getElementById('print-to-date');
+        function openPrintPanel() {
+            const panel = document.getElementById('print-panel');
+            const fromDate = document.getElementById('print-from-date');
+            const toDate = document.getElementById('print-to-date');
 
-    // Use the calendar's currently selected starting date.
-    const startDate = document.getElementById('start-date-selector').value;
+            // Use the calendar's currently selected starting date.
+            const startDate = document.getElementById('start-date-selector').value;
 
-    fromDate.value = startDate;
-    fromDate.min = startDate;
+            fromDate.value = startDate;
+            fromDate.min = startDate;
 
-    // Initially leave the closing date for the user to choose.
-    toDate.value = '';
-    toDate.min = startDate;
+            // Initially leave the closing date for the user to choose.
+            toDate.value = '';
+            toDate.min = startDate;
 
-    panel.style.display = 'block';
-    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
+            panel.style.display = 'block';
+            panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
 
-function closePrintPanel() {
-    document.getElementById('print-panel').style.display = 'none';
-}  
+        function closePrintPanel() {
+            document.getElementById('print-panel').style.display = 'none';
+        }
 
-function printSelectedSchedule() {
-    const fromDate = document.getElementById('print-from-date').value;
-    const toDate = document.getElementById('print-to-date').value;
+        function printSelectedSchedule() {
+            const fromDate = document.getElementById('print-from-date').value;
+            const toDate = document.getElementById('print-to-date').value;
 
-    if (!fromDate || !toDate) {
-        alert('Please select both a From date and a To date.');
-        return;
-    }
+            if (!fromDate || !toDate) {
+                alert('Please select both a From date and a To date.');
+                return;
+            }
 
-    if (toDate < fromDate) {
-        alert('The To date cannot be earlier than the From date.');
-        return;
-    }
+            if (toDate < fromDate) {
+                alert('The To date cannot be earlier than the From date.');
+                return;
+            }
 
-    const selectedEntries = (window.currentCalendarEntries || []).filter(entry =>
-    entry.dateStr >= fromDate && entry.dateStr <= toDate
-);
+            const selectedEntries = (window.currentCalendarEntries || []).filter(entry =>
+                entry.dateStr >= fromDate && entry.dateStr <= toDate
+            );
 
-const printContent = document.getElementById('print-schedule-content');
+            const printContent = document.getElementById('print-schedule-content');
 
-const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, char => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;'
-}[char]));
+            const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, char => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            }[char]));
 
-const formatDate = dateStr =>
-    new Date(dateStr + 'T12:00:00Z').toLocaleDateString('en-IE', {
-        timeZone: 'Europe/Dublin',
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-    });
+            const formatDate = dateStr =>
+                new Date(dateStr + 'T12:00:00Z').toLocaleDateString('en-IE', {
+                    timeZone: 'Europe/Dublin',
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
 
-const entriesByDate = {};
+            const entriesByDate = {};
 
-selectedEntries.forEach(entry => {
-    if (!entriesByDate[entry.dateStr]) {
-        entriesByDate[entry.dateStr] = [];
-    }
-    entriesByDate[entry.dateStr].push(entry);
-});
+            selectedEntries.forEach(entry => {
+                if (!entriesByDate[entry.dateStr]) {
+                    entriesByDate[entry.dateStr] = [];
+                }
+                entriesByDate[entry.dateStr].push(entry);
+            });
 
-const entriesHTML = Object.keys(entriesByDate)
-    .sort()
-    .map(dateStr => `
+            const entriesHTML = Object.keys(entriesByDate)
+                .sort()
+                .map(dateStr => `
         <div class="print-entry">
             <strong>${escapeHTML(formatDate(dateStr))}</strong>
 
@@ -1306,7 +1299,7 @@ const entriesHTML = Object.keys(entriesByDate)
         </div>
     `).join('');
 
-printContent.innerHTML = `
+            printContent.innerHTML = `
     <h2>NATIONAL SYMPHONY CHORUS IRELAND</h2>
     <h3>Choir Schedule: ${escapeHTML(formatDate(fromDate))}
         – ${escapeHTML(formatDate(toDate))}</h3>
@@ -1315,92 +1308,92 @@ printContent.innerHTML = `
     </div>
 `;
 
-closePrintPanel();
-window.print();
-}
-        
-        
-        
+            closePrintPanel();
+            window.print();
+        }
+
+
+
         function handleStartDateChange() {
-    loadEntriesFromStartDate();
-}
-
-async function loadEntriesFromStartDate() {
-    closeModal();
-
-    const selector = document.getElementById('start-date-selector');
-
-    const today = new Intl.DateTimeFormat('sv-SE', {
-        timeZone: 'Europe/Dublin',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
-    }).format(new Date());
-
-    selector.min = today;
-
-    if (!selector.value || selector.value < today) {
-        selector.value = today;
-    }
-
-    const startDate = selector.value;
-
-    const displayDate = new Date(startDate + 'T12:00:00Z')
-    .toLocaleDateString('en-IE', {
-        timeZone: 'Europe/Dublin',
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-    })
-    .replace(/^([^,]+) (\d{1,2}) /, '$1, $2 ');
-
-    document.getElementById('entries-header').textContent =
-        `Entries beginning on ${displayDate}`;
-
-    const container = document.getElementById('entries-list-container');
-
-    container.innerHTML =
-        '<p>Loading entries from Google Calendar...</p>';
-
-    try {
-        const response = await fetch(
-    `${WORKER_URL}?choir=${encodeURIComponent(activeChoirKey)}&startDate=${startDate}`,
-    {
-        headers: {
-            'Authorization': `Bearer ${sessionToken}`
-        }
-    }
-);
-
-if (response.status === 401) {
-    clearLoginSession();
-
-    document.getElementById('main-workspace').style.display = 'none';
-    document.getElementById('gate-screen').style.display = 'none';
-    document.getElementById('login-screen').style.display = 'block';
-
-    document.getElementById('login-error').textContent =
-        'Your session is no longer valid. Please sign in again.';
-
-    return;
-}
-
-        const data = await response.json();
-
-        if (data.success) {
-    window.currentCalendarEntries = data.entries || [];
-    renderEntries(window.currentCalendarEntries);
-} else {
-            container.textContent =
-                `Error loading entries: ${data.error || 'Unknown error'}`;
+            loadEntriesFromStartDate();
         }
 
-    } catch (err) {
-        container.textContent =
-            `Failed to connect to Worker: ${err.message}`;
-    }
-}
+        async function loadEntriesFromStartDate() {
+            closeModal();
+
+            const selector = document.getElementById('start-date-selector');
+
+            const today = new Intl.DateTimeFormat('sv-SE', {
+                timeZone: 'Europe/Dublin',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            }).format(new Date());
+
+            selector.min = today;
+
+            if (!selector.value || selector.value < today) {
+                selector.value = today;
+            }
+
+            const startDate = selector.value;
+
+            const displayDate = new Date(startDate + 'T12:00:00Z')
+                .toLocaleDateString('en-IE', {
+                    timeZone: 'Europe/Dublin',
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                })
+                .replace(/^([^,]+) (\d{1,2}) /, '$1, $2 ');
+
+            document.getElementById('entries-header').textContent =
+                `Entries beginning on ${displayDate}`;
+
+            const container = document.getElementById('entries-list-container');
+
+            container.innerHTML =
+                '<p>Loading entries from Google Calendar...</p>';
+
+            try {
+                const response = await fetch(
+                    `${WORKER_URL}?choir=${encodeURIComponent(activeChoirKey)}&startDate=${startDate}`,
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${sessionToken}`
+                        }
+                    }
+                );
+
+                if (response.status === 401) {
+                    clearLoginSession();
+
+                    document.getElementById('main-workspace').style.display = 'none';
+                    document.getElementById('gate-screen').style.display = 'none';
+                    document.getElementById('login-screen').style.display = 'block';
+
+                    document.getElementById('login-error').textContent =
+                        'Your session is no longer valid. Please sign in again.';
+
+                    return;
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    window.currentCalendarEntries = data.entries || [];
+                    renderEntries(window.currentCalendarEntries);
+                } else {
+                    container.textContent =
+                        `Error loading entries: ${data.error || 'Unknown error'}`;
+                }
+
+            } catch (err) {
+                container.textContent =
+                    `Failed to connect to Worker: ${err.message}`;
+            }
+        }
 
         function handleMonthChange() {
             const monthSelector = document.getElementById('month-selector');
@@ -1444,7 +1437,7 @@ if (response.status === 401) {
 
             let selectedVal = `${year}-${String(parseInt(monthIdx, 10) + 1).padStart(2, '0')}`;
             document.getElementById('entries-header').textContent = `Existing Entries for ${monthNames[parseInt(monthIdx, 10)]} ${year}`;
-            
+
             await fetchEntriesFromWorker(selectedVal);
         }
 
@@ -1470,23 +1463,23 @@ if (response.status === 401) {
 
             try {
                 const response = await fetch(`${WORKER_URL}?choir=${activeChoirKey}&month=${monthVal}`, {
-    headers: {
-        'Authorization': `Bearer ${sessionToken}`
-    }
-});
+                    headers: {
+                        'Authorization': `Bearer ${sessionToken}`
+                    }
+                });
 
-if (response.status === 401) {
-    clearLoginSession();
+                if (response.status === 401) {
+                    clearLoginSession();
 
-    document.getElementById('main-workspace').style.display = 'none';
-    document.getElementById('gate-screen').style.display = 'none';
-    document.getElementById('login-screen').style.display = 'block';
+                    document.getElementById('main-workspace').style.display = 'none';
+                    document.getElementById('gate-screen').style.display = 'none';
+                    document.getElementById('login-screen').style.display = 'block';
 
-    document.getElementById('login-error').textContent =
-        'Your session is no longer valid. Please sign in again.';
+                    document.getElementById('login-error').textContent =
+                        'Your session is no longer valid. Please sign in again.';
 
-    return;
-}
+                    return;
+                }
 
                 const data = await response.json();
 
@@ -1502,8 +1495,8 @@ if (response.status === 401) {
 
         function renderEntries(entries) {
             window.calendarEntriesById = new Map(
-    entries.map(entry => [String(entry.id), entry])
-);
+                entries.map(entry => [String(entry.id), entry])
+            );
             const container = document.getElementById('entries-list-container');
             container.innerHTML = '';
 
@@ -1562,11 +1555,11 @@ if (response.status === 401) {
             document.getElementById('modal-submit-btn').className = 'btn';
             document.getElementById('security-verification-box').style.display = 'none';
             document.getElementById('entry-form').reset();
-            
+
             document.getElementById('custom-category-group').style.display = 'none';
             document.getElementById('custom-venue-group').style.display = 'none';
             handleCategoryChange();
-handleVenueChange();
+            handleVenueChange();
 
             populateTimeDropdowns();
             setTimeString('start', '19:30');
@@ -1585,96 +1578,96 @@ handleVenueChange();
             currentActionState = 'amend';
             targetEntryIndex = id;
             const modalTitle = document.querySelector('#global-action-modal #modal-title');
-console.log('Modal title found:', modalTitle);
-if (modalTitle) modalTitle.textContent = 'Amend Entry';
-console.log('Modal container:', document.getElementById('global-action-modal'));
-console.log('Heading anywhere:', document.getElementById('modal-title'));
+            console.log('Modal title found:', modalTitle);
+            if (modalTitle) modalTitle.textContent = 'Amend Entry';
+            console.log('Modal container:', document.getElementById('global-action-modal'));
+            console.log('Heading anywhere:', document.getElementById('modal-title'));
             document.getElementById('modal-submit-btn').textContent = 'Confirm Amendment';
             document.getElementById('modal-submit-btn').style.display = 'none';
             document.getElementById('modal-submit-btn').className = 'btn';
-            
-            
-populateTimeDropdowns();
-
-// Retrieve the existing event selected for amendment.
-const entry = window.calendarEntriesById?.get(String(id));
-console.log('Selected event data:', entry);
-
-if (!entry) {
-    alert("Could not find the selected event details. Please refresh the calendar and try again.");
-    return;
-}
-
-// Populate the form with the saved event details.
-const categorySelect = document.getElementById('event-type');
-const customCategoryGroup = document.getElementById('custom-category-group');
-const customCategoryInput = document.getElementById('custom-category-input');
-
-const categoryOptionExists = Array.from(categorySelect.options)
-    .some(option => option.value === entry.category);
-
-if (categoryOptionExists && entry.category !== 'Other') {
-    categorySelect.value = entry.category;
-    customCategoryGroup.style.display = 'none';
-    customCategoryInput.value = '';
-} else {
-    categorySelect.value = 'Other';
-    customCategoryGroup.style.display = 'block';
-    customCategoryInput.value = entry.category === 'Other'
-        ? ''
-        : (entry.category || '');        
-}
-
-document.getElementById('configuration-group').style.display =
-    (categorySelect.value === 'Other' || categorySelect.value === 'Party')
-        ? 'none' : 'block';
 
 
-    // Restore the Party title when amending a Party event.
-    const partyGroup = document.getElementById('party-title-group');
-    const partyInput = document.getElementById('party-title-input');
+            populateTimeDropdowns();
 
-    if (entry.category === 'Party') {
-        partyGroup.style.display = 'block';
-        partyInput.value = entry.title || '';
-        partyInput.required = true;
-    } else {
-        partyGroup.style.display = 'none';
-        partyInput.value = '';
-        partyInput.required = false;
-    }
+            // Retrieve the existing event selected for amendment.
+            const entry = window.calendarEntriesById?.get(String(id));
+            console.log('Selected event data:', entry);
+
+            if (!entry) {
+                alert("Could not find the selected event details. Please refresh the calendar and try again.");
+                return;
+            }
+
+            // Populate the form with the saved event details.
+            const categorySelect = document.getElementById('event-type');
+            const customCategoryGroup = document.getElementById('custom-category-group');
+            const customCategoryInput = document.getElementById('custom-category-input');
+
+            const categoryOptionExists = Array.from(categorySelect.options)
+                .some(option => option.value === entry.category);
+
+            if (categoryOptionExists && entry.category !== 'Other') {
+                categorySelect.value = entry.category;
+                customCategoryGroup.style.display = 'none';
+                customCategoryInput.value = '';
+            } else {
+                categorySelect.value = 'Other';
+                customCategoryGroup.style.display = 'block';
+                customCategoryInput.value = entry.category === 'Other'
+                    ? ''
+                    : (entry.category || '');
+            }
+
+            document.getElementById('configuration-group').style.display =
+                (categorySelect.value === 'Other' || categorySelect.value === 'Party')
+                    ? 'none' : 'block';
 
 
-// Restore the saved voice sections.
-document.querySelectorAll('input[name="voice"]').forEach(checkbox => {
-    checkbox.checked = entry.voices.includes(checkbox.value);
-});
+            // Restore the Party title when amending a Party event.
+            const partyGroup = document.getElementById('party-title-group');
+            const partyInput = document.getElementById('party-title-input');
 
-// Restore the saved choir configuration.
-document.getElementById('chk-semi-chorus').checked = entry.semi === true;
-document.getElementById('chk-full-choir').checked = entry.semi !== true;
-populateModalDates(entry.dateStr, entry.date);
-setTimeString('start', entry.startTime);
-setTimeString('end', entry.endTime);
+            if (entry.category === 'Party') {
+                partyGroup.style.display = 'block';
+                partyInput.value = entry.title || '';
+                partyInput.required = true;
+            } else {
+                partyGroup.style.display = 'none';
+                partyInput.value = '';
+                partyInput.required = false;
+            }
 
-// Restore the selected venue.
-const venueSelect = document.getElementById('event-venue');
-const customVenueInput = document.getElementById('custom-venue-input');
-const customVenueGroup = document.getElementById('custom-venue-group');
 
-const venueOptionExists = Array.from(venueSelect.options)
-    .some(option => option.value === entry.venue);
+            // Restore the saved voice sections.
+            document.querySelectorAll('input[name="voice"]').forEach(checkbox => {
+                checkbox.checked = entry.voices.includes(checkbox.value);
+            });
 
-if (venueOptionExists) {
-    venueSelect.value = entry.venue;
-    customVenueGroup.style.display = 'none';
-} else {
-    venueSelect.value = 'Other';
-    customVenueGroup.style.display = 'block';
-    customVenueInput.value = entry.venue || '';
-}
+            // Restore the saved choir configuration.
+            document.getElementById('chk-semi-chorus').checked = entry.semi === true;
+            document.getElementById('chk-full-choir').checked = entry.semi !== true;
+            populateModalDates(entry.dateStr, entry.date);
+            setTimeString('start', entry.startTime);
+            setTimeString('end', entry.endTime);
 
-setFormEditable(true);
+            // Restore the selected venue.
+            const venueSelect = document.getElementById('event-venue');
+            const customVenueInput = document.getElementById('custom-venue-input');
+            const customVenueGroup = document.getElementById('custom-venue-group');
+
+            const venueOptionExists = Array.from(venueSelect.options)
+                .some(option => option.value === entry.venue);
+
+            if (venueOptionExists) {
+                venueSelect.value = entry.venue;
+                customVenueGroup.style.display = 'none';
+            } else {
+                venueSelect.value = 'Other';
+                customVenueGroup.style.display = 'block';
+                customVenueInput.value = entry.venue || '';
+            }
+
+            setFormEditable(true);
 
             requiredRandomCode = String(Math.floor(Math.random() * 900) + 100);
 
@@ -1682,12 +1675,12 @@ setFormEditable(true);
             document.getElementById('security-verification-box').style.display = 'block';
             document.getElementById('security-user-input').value = '';
             document.getElementById('security-user-input').dataset.submitting = 'false';
-            
+
             document.getElementById('global-action-modal').classList.add('visible');
             document.getElementById('global-action-modal').scrollIntoView({
-    behavior: 'smooth',
-    block: 'center'
-});
+                behavior: 'smooth',
+                block: 'center'
+            });
         }
 
         function openDeleteModal(id) {
@@ -1698,43 +1691,43 @@ setFormEditable(true);
             document.getElementById('modal-submit-btn').style.display = 'none';
             document.getElementById('modal-submit-btn').className = 'btn btn-danger';
 
-            
-populateTimeDropdowns();
 
-// Retrieve the original event selected for deletion.
-const entry = window.calendarEntriesById?.get(String(id));
+            populateTimeDropdowns();
 
-if (!entry) {
-    alert("Could not find the selected event details. Please refresh the calendar and try again.");
-    return;
-}
+            // Retrieve the original event selected for deletion.
+            const entry = window.calendarEntriesById?.get(String(id));
 
-// Show the saved date, including its full day and date label.
-populateModalDates(entry.dateStr, entry.date);
+            if (!entry) {
+                alert("Could not find the selected event details. Please refresh the calendar and try again.");
+                return;
+            }
 
-// Show the original start and end times.
-setTimeString('start', entry.startTime);
-setTimeString('end', entry.endTime);
+            // Show the saved date, including its full day and date label.
+            populateModalDates(entry.dateStr, entry.date);
 
-// Show the original venue, including custom venues.
-const venueSelect = document.getElementById('event-venue');
-const customVenueInput = document.getElementById('custom-venue-input');
-const customVenueGroup = document.getElementById('custom-venue-group');
+            // Show the original start and end times.
+            setTimeString('start', entry.startTime);
+            setTimeString('end', entry.endTime);
 
-const venueOptionExists = Array.from(venueSelect.options)
-    .some(option => option.value === entry.venue);
+            // Show the original venue, including custom venues.
+            const venueSelect = document.getElementById('event-venue');
+            const customVenueInput = document.getElementById('custom-venue-input');
+            const customVenueGroup = document.getElementById('custom-venue-group');
 
-if (venueOptionExists) {
-    venueSelect.value = entry.venue;
-    customVenueGroup.style.display = 'none';
-} else {
-    venueSelect.value = 'Other';
-    customVenueGroup.style.display = 'block';
-    customVenueInput.value = entry.venue || '';
-}
+            const venueOptionExists = Array.from(venueSelect.options)
+                .some(option => option.value === entry.venue);
 
-// Keep all event fields read-only for deletion.
-setFormEditable(false);
+            if (venueOptionExists) {
+                venueSelect.value = entry.venue;
+                customVenueGroup.style.display = 'none';
+            } else {
+                venueSelect.value = 'Other';
+                customVenueGroup.style.display = 'block';
+                customVenueInput.value = entry.venue || '';
+            }
+
+            // Keep all event fields read-only for deletion.
+            setFormEditable(false);
 
             requiredRandomCode = String(Math.floor(Math.random() * 900) + 100);
 
@@ -1744,58 +1737,58 @@ setFormEditable(false);
             document.getElementById('security-user-input').dataset.submitting = 'false';
             document.getElementById('global-action-modal').classList.add('visible');
             document.getElementById('global-action-modal').scrollIntoView({
-    behavior: 'smooth',
-    block: 'center'
-});
+                behavior: 'smooth',
+                block: 'center'
+            });
         }
 
-        
-function closeModal() {
-    const modal = document.getElementById('global-action-modal');
 
-    // The modal may already be absent from the page.
-    if (modal) {
-        modal.classList.remove('visible');
-    }
+        function closeModal() {
+            const modal = document.getElementById('global-action-modal');
 
-    const submitButton = document.getElementById('modal-submit-btn');
-    if (submitButton) {
-        submitButton.className = 'btn';
-    }
+            // The modal may already be absent from the page.
+            if (modal) {
+                modal.classList.remove('visible');
+            }
 
-    // Restore form fields only when the form exists.
-    const form = document.getElementById('entry-form');
-    if (form) {
-        setFormEditable(true);
-    }
-}
+            const submitButton = document.getElementById('modal-submit-btn');
+            if (submitButton) {
+                submitButton.className = 'btn';
+            }
+
+            // Restore form fields only when the form exists.
+            const form = document.getElementById('entry-form');
+            if (form) {
+                setFormEditable(true);
+            }
+        }
 
 
-function handleSecurityCodeInput() {
-    const input = document.getElementById('security-user-input');
+        function handleSecurityCodeInput() {
+            const input = document.getElementById('security-user-input');
 
-    // Accept digits only.
-    input.value = input.value.replace(/\D/g, '').slice(0, 3);
+            // Accept digits only.
+            input.value = input.value.replace(/\D/g, '').slice(0, 3);
 
-    // Submit only when the complete, correct code is entered.
-    if (input.value !== requiredRandomCode) {
-        return;
-    }
+            // Submit only when the complete, correct code is entered.
+            if (input.value !== requiredRandomCode) {
+                return;
+            }
 
-    // Automatic submission applies only to Amend and Delete.
-    if (currentActionState !== 'amend' && currentActionState !== 'delete') {
-        return;
-    }
+            // Automatic submission applies only to Amend and Delete.
+            if (currentActionState !== 'amend' && currentActionState !== 'delete') {
+                return;
+            }
 
-    // Prevent another submission while this one is processing.
-    if (input.dataset.submitting === 'true') {
-        return;
-    }
+            // Prevent another submission while this one is processing.
+            if (input.dataset.submitting === 'true') {
+                return;
+            }
 
-    input.dataset.submitting = 'true';
-document.getElementById('entry-form').requestSubmit();
-input.disabled = true;
-}
+            input.dataset.submitting = 'true';
+            document.getElementById('entry-form').requestSubmit();
+            input.disabled = true;
+        }
 
 
         async function handleFormSubmit(event) {
@@ -1823,47 +1816,47 @@ input.disabled = true;
             const semiChorusChecked = document.getElementById('chk-semi-chorus').checked;
 
             const requiresVoices = [
-    'Choir Rehearsal',
-    "Conductor's Piano Rehearsal",
-    'Orchestral Rehearsal',
-    'Performance'
-].includes(category);
+                'Choir Rehearsal',
+                "Conductor's Piano Rehearsal",
+                'Orchestral Rehearsal',
+                'Performance'
+            ].includes(category);
 
-if (currentActionState !== 'delete' && requiresVoices && checkedVoices.length === 0) {
-    alert('Please select at least one voice (S, A, T or B) before saving this entry.');
-    return;
-}
+            if (currentActionState !== 'delete' && requiresVoices && checkedVoices.length === 0) {
+                alert('Please select at least one voice (S, A, T or B) before saving this entry.');
+                return;
+            }
 
-            
-const voiceString = ['S', 'A', 'T', 'B']
-    .filter(voice => checkedVoices.includes(voice))
-    .join('');
 
-let finalTitle;
+            const voiceString = ['S', 'A', 'T', 'B']
+                .filter(voice => checkedVoices.includes(voice))
+                .join('');
 
-if (category === 'Choir Rehearsal') {
-    if (voiceString === 'SATB') {
-        finalTitle = semiChorusChecked
-            ? 'SATB Semi-Chorus Rehearsal'
-            : 'SATB Choir Rehearsal';
-    } else {
-        finalTitle = semiChorusChecked
-            ? `${voiceString} Sectional Semi-Chorus Rehearsal`
-            : `${voiceString} Sectional Rehearsal`;
-    }
-} else if (category === "Conductor's Piano Rehearsal" ||
-           category === 'Orchestral Rehearsal') {
-    finalTitle = `${voiceString} ${semiChorusChecked ? 'Semi-Chorus ' : ''}${category}`;
-} else if (category === 'Performance') {
-    const work = document.getElementById('performance-work-input').value.trim();
-    finalTitle = `${voiceString} Performance: ${work}`;
-} else if (category === 'Party') {
-    finalTitle = document.getElementById('party-title-input').value.trim();
-} else if (document.getElementById('event-type').value === 'Other') {
-    finalTitle = document.getElementById('custom-category-input').value.trim();
-} else {
-    finalTitle = `${voiceString} ${category}`;
-}
+            let finalTitle;
+
+            if (category === 'Choir Rehearsal') {
+                if (voiceString === 'SATB') {
+                    finalTitle = semiChorusChecked
+                        ? 'SATB Semi-Chorus Rehearsal'
+                        : 'SATB Choir Rehearsal';
+                } else {
+                    finalTitle = semiChorusChecked
+                        ? `${voiceString} Sectional Semi-Chorus Rehearsal`
+                        : `${voiceString} Sectional Rehearsal`;
+                }
+            } else if (category === "Conductor's Piano Rehearsal" ||
+                category === 'Orchestral Rehearsal') {
+                finalTitle = `${voiceString} ${semiChorusChecked ? 'Semi-Chorus ' : ''}${category}`;
+            } else if (category === 'Performance') {
+                const work = document.getElementById('performance-work-input').value.trim();
+                finalTitle = `${voiceString} Performance: ${work}`;
+            } else if (category === 'Party') {
+                finalTitle = document.getElementById('party-title-input').value.trim();
+            } else if (document.getElementById('event-type').value === 'Other') {
+                finalTitle = document.getElementById('custom-category-input').value.trim();
+            } else {
+                finalTitle = `${voiceString} ${category}`;
+            }
 
 
             const startTime = getTimeString('start');
@@ -1885,65 +1878,66 @@ if (category === 'Choir Rehearsal') {
                 semi: semiChorusChecked
             };
 
-            
+
             try {
                 const response = await fetch(WORKER_URL, {
                     method: 'POST',
                     headers: {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${sessionToken}`
-},
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionToken}`
+                    },
                     body: JSON.stringify(payload)
                 });
 
                 if (response.status === 401) {
-    clearLoginSession();
-    closeModal();
+                    clearLoginSession();
+                    closeModal();
 
-    document.getElementById('main-workspace').style.display = 'none';
-    document.getElementById('gate-screen').style.display = 'none';
-    document.getElementById('login-screen').style.display = 'block';
+                    document.getElementById('main-workspace').style.display = 'none';
+                    document.getElementById('gate-screen').style.display = 'none';
+                    document.getElementById('login-screen').style.display = 'block';
 
-    document.getElementById('login-error').textContent =
-        'Your session is no longer valid. Please sign in again.';
+                    document.getElementById('login-error').textContent =
+                        'Your session is no longer valid. Please sign in again.';
 
-    return;
-}
-                
+                    return;
+                }
+
                 const result = await response.json();
 
                 if (result.success) {
-    await closeModuleAndRefresh(monthKey);
-} else {
-    const errorMessage = result.error || 'Failed to update calendar.';
+                    await closeModuleAndRefresh(monthKey);
+                } else {
+                    const errorMessage = result.error || 'Failed to update calendar.';
 
-    alert(`Error: ${errorMessage}`);
+                    alert(`Error: ${errorMessage}`);
 
-    if (errorMessage.includes('already been deleted in Google Calendar')) {
-        await closeModuleAndRefresh(monthKey);
-    }
-}
-            
-} catch (err) {
-    alert(`Network error communicating with Worker: ${err.message}`);
-} finally {
-    const securityInput = document.getElementById('security-user-input');
-    securityInput.dataset.submitting = 'false';
-    securityInput.disabled = false;
-}
+                    if (errorMessage.includes('already been deleted in Google Calendar')) {
+                        await closeModuleAndRefresh(monthKey);
+                    }
+                }
+
+            } catch (err) {
+                alert(`Network error communicating with Worker: ${err.message}`);
+            } finally {
+                const securityInput = document.getElementById('security-user-input');
+                securityInput.dataset.submitting = 'false';
+                securityInput.disabled = false;
+            }
 
         }
 
 
-    
-async function closeModuleAndRefresh(monthKey) {
-    closeModal();
-    await loadEntriesFromStartDate();
-} 
 
-        window.onload = function() {
+        async function closeModuleAndRefresh(monthKey) {
+            closeModal();
+            await loadEntriesFromStartDate();
+        }
+
+        window.onload = function () {
             populateTimeDropdowns();
         };
     </script>
 </body>
+
 </html>
