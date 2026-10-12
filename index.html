@@ -109,6 +109,47 @@
             display: block;
         }
 
+        /* Choir colour confirmation buttons */
+
+#colour-button-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    max-width: 320px;
+    margin: 20px auto;
+}
+
+.choir-colour-button {
+    height: 65px;
+    width: 100%;
+    border: 2px solid #ffffff;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.choir-colour-button:hover {
+    outline: 3px solid #374151;
+    outline-offset: 2px;
+}
+
+.choir-colour-button:focus-visible {
+    outline: 3px solid #111827;
+    outline-offset: 3px;
+}
+
+#colour-confirmation-message {
+    text-align: center;
+    font-weight: 600;
+    line-height: 1.6;
+}
+
+#colour-confirmation-feedback {
+    text-align: center;
+    font-weight: bold;
+    min-height: 24px;
+}
+
         .error-text {
             color: var(--danger);
             font-size: 0.85rem;
@@ -449,23 +490,16 @@ body * {
                 </select>
             </div>
 
-            <div id="prompt-choir1" class="confirmation-prompt">
-                <label id="label-code-choir1" for="code-choir1">Enter code to proceed:</label>
-                <input type="text" id="code-choir1" placeholder="Type exact code shown above" oninput="verifyDynamicCode('choir1')">
-                <div class="error-text" id="err-choir1">Incorrect confirmation code. Case-sensitive.</div>
-            </div>
+            <div id="colour-confirmation" class="confirmation-prompt">
 
-            <div id="prompt-choir2" class="confirmation-prompt">
-                <label id="label-code-choir2" for="code-choir2">Enter code to proceed:</label>
-                <input type="text" id="code-choir2" placeholder="Type exact code shown above" oninput="verifyDynamicCode('choir2')">
-                <div class="error-text" id="err-choir2">Incorrect confirmation code. Case-sensitive.</div>
-            </div>
+    <p id="colour-confirmation-message"></p>
 
-            <div id="prompt-choir3" class="confirmation-prompt">
-                <label id="label-code-choir3" for="code-choir3">Enter code to proceed:</label>
-                <input type="text" id="code-choir3" placeholder="Type exact code shown above" oninput="verifyDynamicCode('choir3')">
-                <div class="error-text" id="err-choir3">Incorrect confirmation code. Case-sensitive.</div>
-            </div>
+    <div id="colour-button-grid"></div>
+
+    <p id="colour-confirmation-feedback"
+       aria-live="polite"></p>
+
+</div>
         </div>
 
         <div id="main-workspace">
@@ -853,24 +887,86 @@ loginInProgress = true;
             return `${h}:${m}`;
         }
 
-        function generateRandomMixedCase(word) {
-            return word.split('').map(char => {
-                return Math.random() < 0.5 ? char.toUpperCase() : char.toLowerCase();
-            }).join('');
-        }
+        // Colours associated with the three choirs.
+const choirConfirmationColours = {
+    choir1: '#d97706', // Ochre
+    choir2: '#0369a1', // Slate Blue
+    choir3: '#4f46e5'  // Indigo
+};
 
-        function initDynamicCodes() {
-            const baseWords = { 'choir1': 'NSCI', 'choir2': 'CHOIRB', 'choir3': 'CHOIRC' };
-            
-            ['choir1', 'choir2', 'choir3'].forEach(choirId => {
-                const mixedLetters = generateRandomMixedCase(baseWords[choirId]);
-                const randNum = Math.floor(Math.random() * 90) + 10; 
-                sessionDynamicCodes[choirId] = mixedLetters + randNum;
+// Three additional colours.
+const extraConfirmationColours = [
+    '#16a34a', // Green
+    '#dc2626', // Red
+    '#9333ea'  // Purple
+];
 
-                const labelEl = document.getElementById(`label-code-${choirId}`);
-                labelEl.innerHTML = `Enter code <span class="security-code-highlight">${sessionDynamicCodes[choirId]}</span> to proceed:`;
-            });
-        }
+// Randomise the positions of the six colours.
+function shuffleConfirmationColours(colours) {
+    const shuffled = [...colours];
+
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+
+    return shuffled;
+}
+
+// Display six colour buttons for the selected choir.
+function showColourConfirmation(choirId) {
+    const dropdown = document.getElementById('choir-dropdown');
+    const choirName = dropdown.options[dropdown.selectedIndex].text;
+
+    const panel = document.getElementById('colour-confirmation');
+    const message = document.getElementById('colour-confirmation-message');
+    const grid = document.getElementById('colour-button-grid');
+    const feedback = document.getElementById('colour-confirmation-feedback');
+
+    message.innerHTML =
+    `You have selected<br>
+     <strong style="font-size: 1.25em;">${choirName}</strong><br>
+     To verify this choice, click/tap on the appropriate colour button for that choir.`;
+
+    feedback.textContent = '';
+    grid.innerHTML = '';
+
+    const colours = shuffleConfirmationColours([
+        ...Object.values(choirConfirmationColours),
+        ...extraConfirmationColours
+    ]);
+
+    colours.forEach(colour => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'choir-colour-button';
+        button.style.backgroundColor = colour;
+        button.setAttribute('aria-label', 'Select colour');
+
+        button.addEventListener('click', () => {
+            if (colour !== choirConfirmationColours[choirId]) {
+                feedback.textContent = 'Wrong Colour: Please Try Again';
+                feedback.style.color = '#dc2626';
+                return;
+            }
+
+            grid.style.display = 'none';
+
+            feedback.textContent =
+                `Correct Choice. The ${choirName} Calendar Will Now Be Uploaded`;
+            feedback.style.color = '#15803d';
+
+            setTimeout(() => {
+                unlockWorkspace(choirId);
+            }, 2000);
+        });
+
+        grid.appendChild(button);
+    });
+
+    grid.style.display = 'grid';
+    panel.classList.add('visible');
+}
 
         function initMonthSelector() {
             const selector = document.getElementById('month-selector');
@@ -1061,7 +1157,7 @@ if (cat === 'Other') {
 
             if (activeChoirKey) {
 
-            unlockWorkspace(activeChoirKey);
+            showColourConfirmation(activeChoirKey);
 return;
                 const targetPrompt = document.getElementById(`prompt-${activeChoirKey}`);
                 if (targetPrompt) targetPrompt.classList.add('visible');
@@ -1071,6 +1167,7 @@ return;
         function verifyDynamicCode(choirId) {
             unlockWorkspace(choirId);
     return;
+
             const inputVal = document.getElementById(`code-${choirId}`).value;
             const errBox = document.getElementById(`err-${choirId}`);
             const targetCode = sessionDynamicCodes[choirId];
@@ -1086,6 +1183,14 @@ return;
         }
 
         function unlockWorkspace(choirId) {
+
+            if (choirId !== 'choir1') {
+    const choirName = choirId === 'choir2' ? 'Choir B' : 'Choir C';
+
+    alert(`${choirName} Calendar has not yet been configured.`);
+    return;
+}
+
             document.getElementById('gate-screen').style.display = 'none';
             document.getElementById('main-workspace').style.display = 'block';
 
@@ -1838,7 +1943,6 @@ async function closeModuleAndRefresh(monthKey) {
 
         window.onload = function() {
             populateTimeDropdowns();
-            initDynamicCodes();
         };
     </script>
 </body>
