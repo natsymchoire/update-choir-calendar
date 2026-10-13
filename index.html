@@ -511,6 +511,13 @@
                 <div class="brand-bottom" style="position: relative; padding-bottom: 45px;">
                     Google Calendar Management Tool
 
+                    <button type="button" onclick="chooseDifferentCalendar()" style="position: absolute; left: 10px; bottom: 8px;
+           background-color: #DCC6ED; color: #432A55;
+           border: 1px solid #B89BCF; border-radius: 5px;
+           padding: 5px 12px; cursor: pointer;">
+                        Choose A Different Calendar
+                    </button>
+
                     <button type="button" onclick="logoutFromAuthenticator()" style="position: absolute; right: 10px; bottom: 8px;
                        background-color: #DCC6ED; color: #432A55;
 border: 1px solid #B89BCF; border-radius: 5px;
@@ -642,6 +649,7 @@ border: 1px solid #B89BCF; border-radius: 5px;
                         <label for="event-venue">Venue</label>
                         <select id="event-venue" required onchange="handleVenueChange()">
                             <option value="Kevin Barry Room" selected>Kevin Barry Room</option>
+                            <option value="To Be Confirmed">To Be Confirmed</option>
                             <option value="The Studio">The Studio</option>
                             <option value="Lecture Theatre">Lecture Theatre</option>
                             <option value="John Field Room">John Field Room</option>
@@ -747,6 +755,29 @@ border: 1px solid #B89BCF; border-radius: 5px;
         function clearLoginSession() {
             sessionToken = null;
             sessionExpiresAt = null;
+        }
+
+        function chooseDifferentCalendar() {
+            if (!hasValidSession()) {
+                checkSessionExpiry();
+                return;
+            }
+
+            // Hide the current calendar.
+            document.getElementById('main-workspace').style.display = 'none';
+
+            // Reset the choir selection.
+            document.getElementById('choir-dropdown').value = '';
+
+            // Hide the previous colour confirmation.
+            document.getElementById('colour-confirmation').classList.remove('visible');
+            document.getElementById('colour-confirmation').style.removeProperty('display');
+
+            // Clear any previous confirmation feedback.
+            document.getElementById('colour-confirmation-feedback').textContent = '';
+
+            // Return to the choir-selection screen.
+            document.getElementById('gate-screen').style.display = 'block';
         }
 
         async function logoutFromAuthenticator() {
@@ -958,7 +989,7 @@ border: 1px solid #B89BCF; border-radius: 5px;
 
                     setTimeout(() => {
                         unlockWorkspace(choirId);
-                    }, 2000);
+                    }, 1000);
                 });
 
                 grid.appendChild(button);
@@ -1300,9 +1331,21 @@ border: 1px solid #B89BCF; border-radius: 5px;
     `).join('');
 
             printContent.innerHTML = `
-    <h2>NATIONAL SYMPHONY CHORUS IRELAND</h2>
+    <h2>${escapeHTML(document.getElementById('brand-title').textContent.trim())}</h2>
     <h3>Choir Schedule: ${escapeHTML(formatDate(fromDate))}
         – ${escapeHTML(formatDate(toDate))}</h3>
+        <p style="text-align: center; margin: 8px 0 4px;">
+    <strong>As at ${new Date().toLocaleDateString('en-IE', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+                timeZone: 'Europe/Dublin'
+            })}</strong>
+</p>
+
+<p style="text-align: center; font-size: 0.85em; font-style: italic; margin: 0 0 18px;">
+    (The Schedule gets updated as and when necessary. For up-to-the-minute confirmation of dates/venues etc, always check the Choir Information Hub.)
+</p>
     <div class="print-entries">
         ${entriesHTML}
     </div>
