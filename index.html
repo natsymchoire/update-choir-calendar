@@ -187,10 +187,11 @@
         .brand-top {
             color: #000;
             padding: 1.25rem 1rem;
-            font-size: 1.35rem;
+            font-size: 2.10rem;
             font-weight: 800;
             letter-spacing: 0.5px;
-            text-transform: uppercase;
+            font-variant: small-caps;
+            text-transform: none;
         }
 
         .brand-bottom {
@@ -505,7 +506,6 @@
         <div id="main-workspace">
             <div class="brand-header" id="brand-header-box">
                 <div class="brand-top" id="brand-title">
-                    NATIONAL SYMPHONY CHORUS IRELAND
                 </div>
 
                 <div class="brand-bottom" style="position: relative; padding-bottom: 45px;">
@@ -619,13 +619,14 @@ border: 1px solid #B89BCF; border-radius: 5px;
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" id="event-dates-group">
                         <label for="event-date-dropdown">Date</label>
                         <div style="display: flex; align-items: center; gap: 0.75rem;">
                             <div id="event-weekday" style="font-weight: 600; min-width: 95px;"></div>
                             <input type="date" id="event-date-dropdown" required onchange="validateEventDate()"
                                 oninput="validateEventDate()" style="flex: 1; min-width: 0;">
                         </div>
+                        <div id="additional-event-dates"></div>
                     </div>
 
                     <div class="form-group time-row">
@@ -667,12 +668,17 @@ border: 1px solid #B89BCF; border-radius: 5px;
                         <p id="security-prompt-text">Security Gate: Type code to confirm.</p>
                         <input type="text" id="security-user-input" placeholder="Enter security code" maxlength="3"
                             inputmode="numeric" autocomplete="off" oninput="handleSecurityCodeInput()">
-                    </div>
+                    </div> The
 
                     <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
                         <button type="submit" class="btn" id="modal-submit-btn">Save Entry</button>
                         <button type="button" class="btn" style="background: #64748b;"
                             onclick="closeModal()">Cancel</button>
+                        <button type="button" id="multiple-entries-btn" class="btn"
+                            style="margin-left: auto; background-color: #d97706; color: white;"
+                            onclick="enableMultipleEntries()">
+                            Enable Duplication of this Entry
+                        </button>
                     </div>
                 </form>
             </div>
@@ -1222,13 +1228,13 @@ border: 1px solid #B89BCF; border-radius: 5px;
             const brandBox = document.getElementById('brand-header-box');
 
             if (choirId === 'choir1') {
-                brandTitle.textContent = "NATIONAL SYMPHONY CHORUS IRELAND";
+                brandTitle.textContent = "National Symphony Chorus Ireland";
                 brandBox.style.backgroundColor = "var(--choir-1-bg)";
             } else if (choirId === 'choir2') {
-                brandTitle.textContent = "CÓR LINN";
+                brandTitle.textContent = "Cór Linn";
                 brandBox.style.backgroundColor = "var(--choir-2-bg)";
             } else if (choirId === 'choir3') {
-                brandTitle.textContent = "CÓR NA nÓG";
+                brandTitle.textContent = "Cór na nÓg";
                 brandBox.style.backgroundColor = "var(--choir-3-bg)";
             }
 
@@ -1331,7 +1337,7 @@ border: 1px solid #B89BCF; border-radius: 5px;
     `).join('');
 
             printContent.innerHTML = `
-    <h2>${escapeHTML(document.getElementById('brand-title').textContent.trim())}</h2>
+    <h2 style="font-variant: small-caps; text-transform: none;">${escapeHTML(document.getElementById('brand-title').textContent.trim())}</h2>
     <h3>Choir Schedule: ${escapeHTML(formatDate(fromDate))}
         – ${escapeHTML(formatDate(toDate))}</h3>
         <p style="text-align: center; margin: 8px 0 4px;">
@@ -1590,14 +1596,97 @@ border: 1px solid #B89BCF; border-radius: 5px;
             modal.classList.add('visible');
         }
 
+        function enableMultipleEntries() {
+            const answer = prompt(
+                'How many entries would you like to create?',
+                '4'
+            );
+
+            if (answer === null) return;
+
+            const count = Number(answer);
+
+            if (!Number.isInteger(count) || count < 2 || count > 50) {
+                alert('Please enter a whole number between 2 and 50.');
+                return;
+            }
+
+            const container = document.getElementById('additional-event-dates');
+            container.innerHTML = '';
+
+            const firstDate = document.getElementById('event-date-dropdown');
+            const minimumDate = firstDate.min;
+
+            for (let i = 2; i <= count; i++) {
+                const row = document.createElement('div');
+                row.style.cssText = 'display: flex; align-items: center; gap: 0.75rem; margin-top: 0.75rem;';
+
+                const weekday = document.createElement('div');
+                weekday.style.cssText = 'font-weight: 600; min-width: 95px;';
+
+                const dateInput = document.createElement('input');
+                dateInput.type = 'date';
+                dateInput.required = true;
+                dateInput.min = minimumDate;
+
+                // Suggest the date after the preceding entry, without restricting choices.
+                dateInput.addEventListener('focus', () => {
+                    const allDates = [
+                        document.getElementById('event-date-dropdown'),
+                        ...document.querySelectorAll('#additional-event-dates input[type="date"]')
+                    ];
+
+                    const position = allDates.indexOf(dateInput);
+                    const previousDate = position > 0 ? allDates[position - 1].value : '';
+
+                    if (previousDate && !dateInput.value) {
+                        const suggested = new Date(previousDate + 'T12:00:00Z');
+                        suggested.setUTCDate(suggested.getUTCDate() + 1);
+
+                        dateInput.defaultValue = suggested.toISOString().slice(0, 10);
+                    }
+                });
+                dateInput.style.cssText = 'flex: 1; min-width: 0;';
+                dateInput.dataset.dateNumber = String(i);
+
+                dateInput.addEventListener('change', () => {
+                    if (dateInput.value && dateInput.value < minimumDate) {
+                        dateInput.value = minimumDate;
+                    }
+
+                    weekday.textContent = dateInput.value
+                        ? new Intl.DateTimeFormat('en-IE', {
+                            weekday: 'long',
+                            timeZone: 'UTC'
+                        }).format(new Date(dateInput.value + 'T12:00:00Z'))
+                        : '';
+                });
+
+                row.appendChild(weekday);
+                row.appendChild(dateInput);
+                container.appendChild(row);
+            }
+
+            document.querySelector('label[for="event-date-dropdown"]').textContent = 'Dates';
+            document.getElementById('multiple-entries-btn').style.display = 'none';
+
+            document.getElementById('modal-submit-btn').textContent = 'Create Entries';
+        }
+
         function openAddModal() {
             currentActionState = 'add';
             document.getElementById('modal-title').textContent = 'Add New Entry';
             document.getElementById('modal-submit-btn').textContent = 'Create Entry';
+            document.getElementById('modal-submit-btn').disabled = false;
             document.getElementById('modal-submit-btn').style.display = '';
             document.getElementById('modal-submit-btn').className = 'btn';
             document.getElementById('security-verification-box').style.display = 'none';
             document.getElementById('entry-form').reset();
+
+            // Reset multiple-entry mode.
+            document.getElementById('additional-event-dates').innerHTML = '';
+            document.querySelector('label[for="event-date-dropdown"]').textContent = 'Date';
+            document.getElementById('multiple-entries-btn').style.display = '';
 
             document.getElementById('custom-category-group').style.display = 'none';
             document.getElementById('custom-venue-group').style.display = 'none';
@@ -1628,6 +1717,11 @@ border: 1px solid #B89BCF; border-radius: 5px;
             document.getElementById('modal-submit-btn').textContent = 'Confirm Amendment';
             document.getElementById('modal-submit-btn').style.display = 'none';
             document.getElementById('modal-submit-btn').className = 'btn';
+
+            // Reset multiple-entry mode for amendment.
+            document.getElementById('additional-event-dates').innerHTML = '';
+            document.querySelector('label[for="event-date-dropdown"]').textContent = 'Date';
+            document.getElementById('multiple-entries-btn').style.display = 'none';
 
 
             populateTimeDropdowns();
@@ -1733,6 +1827,10 @@ border: 1px solid #B89BCF; border-radius: 5px;
             document.getElementById('modal-submit-btn').textContent = 'Confirm Deletion';
             document.getElementById('modal-submit-btn').style.display = 'none';
             document.getElementById('modal-submit-btn').className = 'btn btn-danger';
+            // Reset multiple-entry mode for deletion.
+            document.getElementById('additional-event-dates').innerHTML = '';
+            document.querySelector('label[for="event-date-dropdown"]').textContent = 'Date';
+            document.getElementById('multiple-entries-btn').style.display = 'none';
 
 
             populateTimeDropdowns();
@@ -1837,6 +1935,13 @@ border: 1px solid #B89BCF; border-radius: 5px;
         async function handleFormSubmit(event) {
             event.preventDefault();
 
+            // Prevent a second submission while the first is running.
+            const submitButton = document.getElementById('modal-submit-btn');
+
+            if (submitButton.disabled) {
+                return;
+            }
+
             if (currentActionState === 'amend' || currentActionState === 'delete') {
                 const userInput = document.getElementById('security-user-input').value;
                 if (userInput !== requiredRandomCode) {
@@ -1907,6 +2012,26 @@ border: 1px solid #B89BCF; border-radius: 5px;
             const selectedDateStr = document.getElementById('event-date-dropdown').value;
             const monthKey = selectedDateStr.substring(0, 7);
 
+            // Gather the original date and any additional duplication dates.
+            const selectedDates = [
+                selectedDateStr,
+                ...Array.from(
+                    document.querySelectorAll('#additional-event-dates input[type="date"]')
+                ).map(input => input.value)
+            ];
+
+            // Ensure every date has been selected.
+            if (currentActionState === 'add' && selectedDates.some(date => !date)) {
+                alert('Please select a date for every entry.');
+                return;
+            }
+
+            // Prevent accidentally creating duplicate entries on the same date.
+            if (currentActionState === 'add' && new Set(selectedDates).size !== selectedDates.length) {
+                alert('You have selected the same date more than once. Please correct this before continuing.');
+                return;
+            }
+
             const payload = {
                 action: currentActionState,
                 choir: activeChoirKey,
@@ -1921,48 +2046,105 @@ border: 1px solid #B89BCF; border-radius: 5px;
                 semi: semiChorusChecked
             };
 
+            // Prepare a separate payload for each selected date.
+            const entryPayloads = currentActionState === 'add'
+                ? selectedDates.map(date => ({
+                    ...payload,
+                    dateStr: date
+                }))
+                : [payload];
 
+
+            // Track how many calendar entries are successfully saved.
+            let successfulEntries = 0;
+            // Disable submission only after all validation checks have passed.
+            submitButton.disabled = true;
             try {
-                const response = await fetch(WORKER_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${sessionToken}`
-                    },
-                    body: JSON.stringify(payload)
-                });
+                for (const entryPayload of entryPayloads) {
+                    const response = await fetch(WORKER_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${sessionToken}`
+                        },
+                        body: JSON.stringify(entryPayload)
+                    });
 
-                if (response.status === 401) {
-                    clearLoginSession();
-                    closeModal();
+                    if (response.status === 401) {
+                        if (successfulEntries > 0) {
+                            alert(
+                                `Your session has expired.\n\n` +
+                                `${successfulEntries} of ${entryPayloads.length} entries were created successfully.\n` +
+                                `Please sign in again and check the calendar before retrying the remaining entries.`
+                            );
+                        }
+                        clearLoginSession();
+                        closeModal();
 
-                    document.getElementById('main-workspace').style.display = 'none';
-                    document.getElementById('gate-screen').style.display = 'none';
-                    document.getElementById('login-screen').style.display = 'block';
+                        document.getElementById('main-workspace').style.display = 'none';
+                        document.getElementById('gate-screen').style.display = 'none';
+                        document.getElementById('login-screen').style.display = 'block';
 
-                    document.getElementById('login-error').textContent =
-                        'Your session is no longer valid. Please sign in again.';
+                        document.getElementById('login-error').textContent =
+                            'Your session is no longer valid. Please sign in again.';
 
-                    return;
+                        return;
+                    }
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        successfulEntries++;
+                    } else {
+                        const errorMessage = result.error || 'Failed to update calendar.';
+
+                        alert(
+                            `Calendar error: ${errorMessage}\n\n` +
+                            `${successfulEntries} of ${entryPayloads.length} entries were saved successfully.\n` +
+                            `Please check the calendar before attempting to create the remaining entries.`
+                        );
+
+                        // Refresh if entries were saved, or an existing event was already deleted.
+                        if (
+                            successfulEntries > 0 ||
+                            errorMessage.includes('already been deleted in Google Calendar')
+                        ) {
+                            try {
+                                await closeModuleAndRefresh(monthKey);
+                            } catch (refreshError) {
+                                console.error('Calendar refresh failed:', refreshError);
+                            }
+                        }
+
+                        // Stop submitting further entries after an error.
+                        return;
+                    }
                 }
+                // All selected entries have been submitted successfully.
+                await closeModuleAndRefresh(monthKey);
+            } catch (err) {
+                alert(
+                    `Network error communicating with Worker: ${err.message}\n\n` +
+                    `${successfulEntries} of ${entryPayloads.length} entries were confirmed as saved.\n` +
+                    (successfulEntries === entryPayloads.length
+                        ? `All entries were saved, but the calendar refresh may have failed.\n`
+                        : `An additional entry may have been saved before the connection failed.\n`) +
+                    `Please check Google Calendar before retrying.`
+                );
 
-                const result = await response.json();
-
-                if (result.success) {
-                    await closeModuleAndRefresh(monthKey);
-                } else {
-                    const errorMessage = result.error || 'Failed to update calendar.';
-
-                    alert(`Error: ${errorMessage}`);
-
-                    if (errorMessage.includes('already been deleted in Google Calendar')) {
+                if (
+                    successfulEntries > 0 &&
+                    successfulEntries < entryPayloads.length
+                ) {
+                    try {
                         await closeModuleAndRefresh(monthKey);
+                    } catch (refreshError) {
+                        console.error('Calendar refresh failed:', refreshError);
                     }
                 }
 
-            } catch (err) {
-                alert(`Network error communicating with Worker: ${err.message}`);
             } finally {
+                submitButton.disabled = false;
                 const securityInput = document.getElementById('security-user-input');
                 securityInput.dataset.submitting = 'false';
                 securityInput.disabled = false;
